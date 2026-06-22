@@ -117,8 +117,10 @@ export default function HeroSection({ bgIndex, setBgIndex, isHeroActive }: HeroS
         </h1>
 
         {/* Subtitle: "frontend developer / Web Designer" offset to account for vertical stretch of h1 */}
-        <p className="text-base sm:text-lg lg:text-xl font-light text-white/50 uppercase tracking-widest mt-[5vh] lg:mt-[3.5vh] font-sans">
-          frontend developer &nbsp;/&nbsp; Web Designer
+        <p className="text-base sm:text-lg lg:text-xl font-light text-white/50 uppercase tracking-widest mt-[5vh] lg:mt-[3.5vh] font-sans flex items-center">
+          <span>frontend developer</span>
+          <span className="w-2.5 h-2.5 border border-white/40 inline-block mx-4" style={{ borderWidth: '1.5px' }} />
+          <span>Web Designer</span>
         </p>
 
       </div>

@@ -16,8 +16,12 @@ export default function AboutSection() {
         >
           About Me
         </h1>
-        <p className="text-base sm:text-lg lg:text-xl font-light text-white/40 uppercase tracking-widest mt-8 font-sans">
-          Desarrollador &nbsp;&bull;&nbsp; Diseñador &nbsp;&bull;&nbsp; Creador
+        <p className="text-base sm:text-lg lg:text-xl font-light text-white/40 uppercase tracking-widest mt-8 font-sans flex items-center justify-center">
+          <span>Desarrollador</span>
+          <span className="w-2.5 h-2.5 border border-white/30 inline-block mx-4" style={{ borderWidth: '1.5px' }} />
+          <span>Diseñador</span>
+          <span className="w-2.5 h-2.5 border border-white/30 inline-block mx-4" style={{ borderWidth: '1.5px' }} />
+          <span>Creador</span>
         </p>
       </div>
     </div>

@@ -16,8 +16,10 @@ export default function ContactSection() {
         >
           Contacto
         </h1>
-        <p className="text-base sm:text-lg lg:text-xl font-light text-white/40 uppercase tracking-widest mt-8 font-sans">
-          Trabajemos juntos &nbsp;&bull;&nbsp; Escríbeme
+        <p className="text-base sm:text-lg lg:text-xl font-light text-white/40 uppercase tracking-widest mt-8 font-sans flex items-center justify-center">
+          <span>Trabajemos juntos</span>
+          <span className="w-2.5 h-2.5 border border-white/30 inline-block mx-4" style={{ borderWidth: '1.5px' }} />
+          <span>Escríbeme</span>
         </p>
       </div>
     </div>
