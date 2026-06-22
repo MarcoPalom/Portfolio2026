@@ -1,0 +1,156 @@
+import ImageSequence from './ImageSequence';
+
+// Cinematic holographic filters corresponding to each background color (softened)
+const holographicFilters = [
+  'sepia(1) saturate(2.8) hue-rotate(185deg) brightness(0.85) contrast(1.05) drop-shadow(0 0 20px rgba(59,130,246,0.4))',
+  'sepia(1) saturate(3.2) hue-rotate(245deg) brightness(0.85) contrast(1.05) drop-shadow(0 0 20px rgba(168,85,247,0.4))',
+  'sepia(1) saturate(3.8) hue-rotate(325deg) brightness(0.9) contrast(1.0) drop-shadow(0 0 20px rgba(239,68,68,0.4))',
+  'sepia(1) saturate(3.0) hue-rotate(65deg) brightness(0.9) contrast(1.1) drop-shadow(0 0 20px rgba(34,197,94,0.4))',
+  'sepia(1) saturate(2.8) hue-rotate(185deg) brightness(0.85) contrast(1.05) drop-shadow(0 0 20px rgba(59,130,246,0.4))', // loop index 4 (same as 0)
+];
+
+interface HeroSectionProps {
+  bgIndex: number;
+  setBgIndex: React.Dispatch<React.SetStateAction<number>>;
+  isHeroActive: boolean;
+}
+
+export default function HeroSection({ bgIndex, setBgIndex, isHeroActive }: HeroSectionProps) {
+  const handleFrameTrigger = (frame: number) => {
+    if (frame === 14 && isHeroActive) {
+      // Loop the background colors only within the first 4 (0, 1, 2, 3) when at the Hero page
+      setBgIndex((prev) => (prev + 1) % 4);
+    }
+  };
+
+  return (
+    <section className="relative min-h-screen w-full flex items-center overflow-hidden bg-transparent">
+      {/* Background Cinematic Orbs */}
+      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-brand-700/20 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[10%] w-[60%] h-[60%] bg-pink-700/10 rounded-full blur-[160px] pointer-events-none animate-pulse" style={{ animationDuration: '8s' }} />
+
+      {/* Cyberpunk Holographic HUD Discs (Spinning behind the head) */}
+      <div className="absolute left-[50%] top-[30%] -translate-x-1/2 -translate-y-1/2 lg:left-auto lg:right-[15vw] lg:top-[42vh] lg:translate-x-1/2 lg:-translate-y-1/2 w-[85vw] h-[85vw] lg:w-[65vh] lg:h-[65vh] max-w-[550px] max-h-[550px] z-4 pointer-events-none flex items-center justify-center">
+        <svg viewBox="0 0 200 200" className="w-full h-full drop-shadow-[0_0_12px_rgba(255,255,255,0.1)]">
+          <defs>
+            <filter id="glow-yellow">
+              <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+              <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+            <filter id="glow-red">
+              <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+              <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+            <filter id="glow-green">
+              <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+              <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+
+          {/* Inner Disc (Yellow): rotating clockwise */}
+          <g className="animate-[spin_16s_linear_infinite]" style={{ transformOrigin: '100px 100px' }}>
+            <circle
+              cx="100"
+              cy="100"
+              r="44"
+              stroke="#eab308"
+              strokeWidth="6"
+              strokeDasharray="180 50"
+              fill="none"
+              style={{ filter: 'url(#glow-yellow)' }}
+              opacity="0.85"
+            />
+          </g>
+
+          {/* Middle Disc (Red): rotating counter-clockwise */}
+          <g className="animate-[spin_24s_linear_infinite_reverse]" style={{ transformOrigin: '100px 100px' }}>
+            <circle
+              cx="100"
+              cy="100"
+              r="64"
+              stroke="#ef4444"
+              strokeWidth="12"
+              strokeDasharray="260 70 40 70"
+              fill="none"
+              style={{ filter: 'url(#glow-red)' }}
+              opacity="0.8"
+            />
+          </g>
+
+          {/* Outer Disc (Green): rotating clockwise */}
+          <g className="animate-[spin_32s_linear_infinite]" style={{ transformOrigin: '100px 100px' }}>
+            <circle
+              cx="100"
+              cy="100"
+              r="88"
+              stroke="#22c55e"
+              strokeWidth="20"
+              strokeDasharray="360 110"
+              fill="none"
+              style={{ filter: 'url(#glow-green)' }}
+              opacity="0.75"
+            />
+          </g>
+        </svg>
+      </div>
+
+      {/* Title & Subtitle: Layered behind the image sequence (z-5) */}
+      <div className="absolute left-[6vw] lg:left-[8vw] top-[22vh] lg:top-[25vh] z-5 flex flex-col pointer-events-none select-none">
+        
+        {/* Title: Elongated (scaleY) and condensed (Bebas Neue) */}
+        <h1 className="font-display text-[9vw] lg:text-[7vw] leading-[0.8] uppercase whitespace-nowrap text-[#f5f5f7]" 
+            style={{ 
+              transform: 'scaleY(1.4)', 
+              transformOrigin: 'left top',
+              letterSpacing: '-0.04em'
+            }}>
+          Marco Palomo
+        </h1>
+
+        {/* Subtitle: "frontend developer / Web Designer" offset to account for vertical stretch of h1 */}
+        <p className="text-base sm:text-lg lg:text-xl font-light text-white/50 uppercase tracking-widest mt-[5vh] lg:mt-[3.5vh] font-sans">
+          frontend developer &nbsp;/&nbsp; Web Designer
+        </p>
+
+      </div>
+
+      {/* Full-Height Holographic Image Sequence on the Right (z-10 to overlay the title text) */}
+      <div className="absolute right-0 bottom-0 top-0 w-full lg:w-[48vw] h-[60vh] lg:h-full z-10 flex items-end overflow-hidden pointer-events-none">
+        
+        {/* Reusable ImageSequence Component with custom styling, dynamic color mapping, and bottom fade-out mask */}
+        <ImageSequence 
+          className="absolute inset-0 w-full h-full flex items-end justify-center lg:justify-end z-10 opacity-100"
+          imgClassName="w-full h-full object-contain object-bottom lg:object-right-bottom"
+          onTriggerFrame={handleFrameTrigger}
+          style={{
+            WebkitMaskImage: 'linear-gradient(to top, transparent, white 15%)',
+            maskImage: 'linear-gradient(to top, transparent, white 15%)',
+          }}
+          imgStyle={{
+            filter: holographicFilters[bgIndex],
+            transition: 'filter 1.0s ease-in-out', // Smoothly transitions the face color to match the background
+          }}
+        />
+
+      </div>
+
+      {/* Logo in the bottom-left corner */}
+      <div className="absolute bottom-6 left-6 md:bottom-8 md:left-8 z-20">
+        <img 
+          src="/LOGO.png" 
+          alt="Logo" 
+          className="h-5 md:h-7 w-auto object-contain opacity-75 hover:opacity-100 transition-opacity duration-300 pointer-events-auto" 
+        />
+      </div>
+    </section>
+  );
+}
