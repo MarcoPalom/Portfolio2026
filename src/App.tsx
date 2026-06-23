@@ -2,7 +2,7 @@ import { useState } from 'react';
 import HeroSection from './components/HeroSection';
 import Loader from './components/Loader';
 import PortfolioSection from './components/PortfolioSection';
-import StashSection from './components/StashSection';
+import StackSection from './components/StackSection';
 import AboutSection from './components/AboutSection';
 import ContactSection from './components/ContactSection';
 import CustomCursor from './components/CustomCursor';
@@ -61,9 +61,9 @@ function App() {
             <PortfolioSection scrollProgress={portfolioScroll} />
           </div>
 
-          {/* Section 3: Stash */}
+          {/* Section 3: Stack */}
           <div className="absolute left-0 top-[200vh] w-full h-full">
-            <StashSection />
+            <StackSection />
           </div>
 
           {/* Section 4: About Me */}

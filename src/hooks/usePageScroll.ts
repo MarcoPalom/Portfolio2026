@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { Observer } from 'gsap/Observer';
-import { products } from '../components/PortfolioSection';
+import { PRODUCTS } from '../constants/portfolio';
 
 gsap.registerPlugin(Observer);
 
@@ -36,8 +36,8 @@ export function usePageScroll(loadingComplete: boolean) {
           portfolioScrollRef.current = 0.0;
           setPortfolioScroll(0.0);
         } else if (activeSectionRef.current > 1) {
-          portfolioScrollRef.current = products.length + 1;
-          setPortfolioScroll(products.length + 1);
+          portfolioScrollRef.current = PRODUCTS.length + 1;
+          setPortfolioScroll(PRODUCTS.length + 1);
         }
       }
 
@@ -108,7 +108,7 @@ export function usePageScroll(loadingComplete: boolean) {
       onDown: () => {
         if (!isAnimatingRef.current) {
           if (activeSectionRef.current === 1) {
-            const limit = products.length + 1;
+            const limit = PRODUCTS.length + 1;
             if (portfolioScrollRef.current < limit) {
               const nextScroll = Math.min(limit, portfolioScrollRef.current + 0.15);
               portfolioScrollRef.current = nextScroll;
@@ -131,7 +131,7 @@ export function usePageScroll(loadingComplete: boolean) {
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (isAnimatingRef.current) return;
-      const limit = products.length + 1;
+      const limit = PRODUCTS.length + 1;
       if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
         if (activeSectionRef.current === 1) {
           if (portfolioScrollRef.current < limit) {
