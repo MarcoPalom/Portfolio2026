@@ -4,41 +4,82 @@ interface LoaderProps {
   onComplete: () => void;
 }
 
+const frames = Array.from({ length: 20 }, (_, i) => {
+  const part1 = i.toString().padStart(4, '0');
+  const part2 = (i + 1).toString().padStart(2, '0');
+  return `/secc1/marco_${part1}_${part2}.png.png`;
+});
+
+const productImages = [
+  '/Screen1.png',
+  '/Screen2.jpeg',
+  '/Screen3.jpeg',
+  '/Screen4.png',
+  '/Screen5.png',
+];
+
+const generalImages = [
+  '/LOGO.png',
+  '/Marco1.png',
+];
+
+const ALL_ASSETS = [...frames, ...productImages, ...generalImages];
+
 export default function Loader({ onComplete }: LoaderProps) {
   const [progress, setProgress] = useState(0);
+  const [targetProgress, setTargetProgress] = useState(0);
   const [phase, setPhase] = useState<'loading' | 'expanding' | 'fading' | 'done'>('loading');
 
+  // Preload all assets on mount
   useEffect(() => {
-    let current = 0;
-    const interval = setInterval(() => {
-      // Linear and smooth loading increments
-      const increment = Math.floor(Math.random() * 8) + 4;
-      current = Math.min(100, current + increment);
-      setProgress(current);
+    let loadedCount = 0;
+    const totalCount = ALL_ASSETS.length;
 
-      if (current === 100) {
-        clearInterval(interval);
-        
-        // Transition 1: Scale up the square to resolve into the logo
-        setTimeout(() => {
-          setPhase('expanding');
-          
-          // Transition 2: Fade out the entire black curtain
-          setTimeout(() => {
-            setPhase('fading');
-            
-            // Transition 3: Finish loader
-            setTimeout(() => {
-              setPhase('done');
-              onComplete();
-            }, 800); // fade out duration
-          }, 1000); // logo display duration
-        }, 200); // brief pause at 100%
-      }
-    }, 80);
+    const handleAssetLoad = () => {
+      loadedCount++;
+      const currentTarget = Math.min(100, Math.round((loadedCount / totalCount) * 100));
+      setTargetProgress(currentTarget);
+    };
+
+    ALL_ASSETS.forEach((src) => {
+      const img = new Image();
+      img.onload = handleAssetLoad;
+      img.onerror = handleAssetLoad; // count errors to avoid locking the user out
+      img.src = src;
+    });
+  }, []);
+
+  // Smoothly increment the displayed progress towards the actual loaded target
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev < targetProgress) {
+          return prev + 1;
+        }
+        return prev;
+      });
+    }, 15);
 
     return () => clearInterval(interval);
-  }, [onComplete]);
+  }, [targetProgress]);
+
+  // Finish preloading animation sequence when displayed progress hits 100%
+  useEffect(() => {
+    if (progress === 100 && phase === 'loading') {
+      setTimeout(() => {
+        setPhase('expanding');
+        
+        setTimeout(() => {
+          setPhase('fading');
+          
+          setTimeout(() => {
+            setPhase('done');
+            onComplete();
+          }, 800); // fade out duration
+        }, 1000); // logo display duration
+      }, 200); // brief pause at 100%
+    }
+  }, [progress, phase, onComplete]);
 
   if (phase === 'done') return null;
 

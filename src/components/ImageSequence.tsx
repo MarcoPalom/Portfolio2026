@@ -46,7 +46,7 @@ export default function ImageSequence({ className, imgClassName, onTriggerFrame,
 
         return next;
       });
-    }, 100);
+    }, 140);
 
     return () => clearInterval(interval);
   }, []);

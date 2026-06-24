@@ -1,4 +1,5 @@
 import ImageSequence from './ImageSequence';
+import EvaporatingPixels from './EvaporatingPixels';
 
 // Cinematic holographic filters corresponding to each background color (softened)
 const holographicFilters = [
@@ -29,79 +30,7 @@ export default function HeroSection({ bgIndex, setBgIndex, isHeroActive }: HeroS
       <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-brand-700/20 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[10%] w-[60%] h-[60%] bg-pink-700/10 rounded-full blur-[160px] pointer-events-none animate-pulse" style={{ animationDuration: '8s' }} />
 
-      {/* Cyberpunk Holographic HUD Discs (Spinning behind the head) */}
-      <div className="absolute left-[50%] top-[30%] -translate-x-1/2 -translate-y-1/2 lg:left-auto lg:right-[15vw] lg:top-[42vh] lg:translate-x-1/2 lg:-translate-y-1/2 w-[85vw] h-[85vw] lg:w-[65vh] lg:h-[65vh] max-w-[550px] max-h-[550px] z-4 pointer-events-none flex items-center justify-center">
-        <svg viewBox="0 0 200 200" className="w-full h-full drop-shadow-[0_0_12px_rgba(255,255,255,0.1)]">
-          <defs>
-            <filter id="glow-yellow">
-              <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-              <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
-            <filter id="glow-red">
-              <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-              <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
-            <filter id="glow-green">
-              <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-              <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
-          </defs>
 
-          {/* Inner Disc (Yellow): rotating clockwise */}
-          <g className="animate-[spin_16s_linear_infinite]" style={{ transformOrigin: '100px 100px' }}>
-            <circle
-              cx="100"
-              cy="100"
-              r="44"
-              stroke="#eab308"
-              strokeWidth="6"
-              strokeDasharray="180 50"
-              fill="none"
-              style={{ filter: 'url(#glow-yellow)' }}
-              opacity="0.85"
-            />
-          </g>
-
-          {/* Middle Disc (Red): rotating counter-clockwise */}
-          <g className="animate-[spin_24s_linear_infinite_reverse]" style={{ transformOrigin: '100px 100px' }}>
-            <circle
-              cx="100"
-              cy="100"
-              r="64"
-              stroke="#ef4444"
-              strokeWidth="12"
-              strokeDasharray="260 70 40 70"
-              fill="none"
-              style={{ filter: 'url(#glow-red)' }}
-              opacity="0.8"
-            />
-          </g>
-
-          {/* Outer Disc (Green): rotating clockwise */}
-          <g className="animate-[spin_32s_linear_infinite]" style={{ transformOrigin: '100px 100px' }}>
-            <circle
-              cx="100"
-              cy="100"
-              r="88"
-              stroke="#22c55e"
-              strokeWidth="20"
-              strokeDasharray="360 110"
-              fill="none"
-              style={{ filter: 'url(#glow-green)' }}
-              opacity="0.75"
-            />
-          </g>
-        </svg>
-      </div>
 
       {/* Title & Subtitle: Layered behind the image sequence (z-5) */}
       <div className="absolute left-[6vw] lg:left-[8vw] top-[22vh] lg:top-[25vh] z-5 flex flex-col pointer-events-none select-none">
@@ -125,9 +54,9 @@ export default function HeroSection({ bgIndex, setBgIndex, isHeroActive }: HeroS
 
       </div>
 
-      {/* Full-Height Holographic Image Sequence on the Right (z-10 to overlay the title text) */}
       <div className="absolute right-0 bottom-0 top-0 w-full lg:w-[48vw] h-[60vh] lg:h-full z-10 flex items-end overflow-hidden pointer-events-none">
-        
+        <EvaporatingPixels bgIndex={bgIndex} />
+
         {/* Reusable ImageSequence Component with custom styling, dynamic color mapping, and bottom fade-out mask */}
         <ImageSequence 
           className="absolute inset-0 w-full h-full flex items-end justify-center lg:justify-end z-10 opacity-100"

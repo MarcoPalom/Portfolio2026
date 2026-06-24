@@ -23,6 +23,8 @@ function App() {
   const {
     activeSection,
     portfolioScroll,
+    aboutScroll,
+    contactScroll,
     bgIndex,
     setBgIndex,
     containerRef,
@@ -68,12 +70,12 @@ function App() {
 
           {/* Section 4: About Me */}
           <div className="absolute left-[100vw] top-[300vh] w-full h-full">
-            <AboutSection />
+            <AboutSection scrollProgress={aboutScroll} />
           </div>
 
           {/* Section 5: Contacto */}
           <div className="absolute left-0 top-[400vh] w-full h-full">
-            <ContactSection />
+            <ContactSection scrollProgress={contactScroll} />
           </div>
 
         </div>
