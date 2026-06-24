@@ -250,48 +250,48 @@ export default function MeDoodles() {
       </div>
 
 
-      {/* ─── MOBILE COLLAGE VIEW (sitting in the free area top-[5vh] to top-[38vh]) ─── */}
+      {/* ─── MOBILE COLLAGE VIEW (sitting in the free area top-[23vh] to top-[42vh]) ─── */}
       <div className="md:hidden absolute inset-0 w-full h-full pointer-events-none">
         {/* Reliable Trio Mobile */}
-        <ShieldDoodle className="absolute left-[3vw] top-[6vh] w-[60px]" />
-        <div className="doodle-item absolute left-[20vw] top-[6vh] w-[30px] pointer-events-auto select-none">
+        <ShieldDoodle className="absolute left-[3vw] top-[23vh] w-[60px]" />
+        <div className="doodle-item absolute left-[20vw] top-[23vh] w-[30px] pointer-events-auto select-none">
           <ReliableIcon />
         </div>
-        <div className="doodle-item absolute left-[29vw] top-[6vh] w-[40px] pointer-events-auto select-none">
+        <div className="doodle-item absolute left-[29vw] top-[23vh] w-[40px] pointer-events-auto select-none">
           <ReliableDiagram />
         </div>
 
         {/* Fast Learner Trio Mobile */}
-        <RocketDoodle className="absolute right-[3vw] top-[6vh] w-[60px]" />
-        <div className="doodle-item absolute right-[20vw] top-[5vh] w-[30px] pointer-events-auto select-none">
+        <RocketDoodle className="absolute right-[3vw] top-[23vh] w-[60px]" />
+        <div className="doodle-item absolute right-[20vw] top-[23vh] w-[30px] pointer-events-auto select-none">
           <FastLearnerIcon />
         </div>
-        <div className="doodle-item absolute right-[29vw] top-[6vh] w-[40px] pointer-events-auto select-none">
+        <div className="doodle-item absolute right-[29vw] top-[23vh] w-[40px] pointer-events-auto select-none">
           <FastLearnerDiagram />
         </div>
 
         {/* Calm Trio Mobile */}
-        <div className="doodle-item absolute left-[3vw] top-[16vh] w-[32px] pointer-events-auto select-none">
+        <div className="doodle-item absolute left-[3vw] top-[31vh] w-[32px] pointer-events-auto select-none">
           <CalmIcon />
         </div>
-        <div className="doodle-item absolute left-[12vw] top-[16vh] w-[35px] pointer-events-auto select-none">
+        <div className="doodle-item absolute left-[12vw] top-[31vh] w-[35px] pointer-events-auto select-none">
           <CalmDiagram />
         </div>
-        <ZenDoodle className="absolute left-[22vw] top-[16vh] w-[60px]" />
+        <ZenDoodle className="absolute left-[22vw] top-[31vh] w-[60px]" />
 
         {/* Funny Trio Mobile */}
-        <div className="doodle-item absolute right-[3vw] top-[16vh] w-[32px] pointer-events-auto select-none">
+        <div className="doodle-item absolute right-[3vw] top-[31vh] w-[32px] pointer-events-auto select-none">
           <FunnyIcon />
         </div>
-        <div className="doodle-item absolute right-[12vw] top-[16vh] w-[35px] pointer-events-auto select-none">
+        <div className="doodle-item absolute right-[12vw] top-[31vh] w-[35px] pointer-events-auto select-none">
           <FunnyDiagram />
         </div>
-        <SmileDoodle className="absolute right-[22vw] top-[16vh] w-[60px]" />
+        <SmileDoodle className="absolute right-[22vw] top-[31vh] w-[60px]" />
 
         {/* Extra Doodles Mobile */}
-        <AnchorDoodle className="absolute left-[4vw] top-[27vh] w-[60px]" />
-        <BrainDoodle className="absolute right-[4vw] top-[27vh] w-[60px]" />
-        <CloudDoodle className="absolute left-[36vw] top-[27vh] w-[60px]" />
+        <AnchorDoodle className="absolute left-[4vw] top-[39vh] w-[60px]" />
+        <BrainDoodle className="absolute right-[4vw] top-[39vh] w-[60px]" />
+        <CloudDoodle className="absolute left-[36vw] top-[39vh] w-[60px]" />
       </div>
 
 

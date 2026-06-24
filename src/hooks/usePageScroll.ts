@@ -22,6 +22,7 @@ export function usePageScroll(loadingComplete: boolean) {
   const portfolioScrollRef = useRef(0);
   const aboutScrollRef = useRef(0);
   const contactScrollRef = useRef(0);
+  const stackScrollRef = useRef(0);
   const boundaryHitTimeRef = useRef<number>(0);
 
   const gotoSection = useCallback((index: number) => {
@@ -40,6 +41,21 @@ export function usePageScroll(loadingComplete: boolean) {
       } else if (activeSectionRef.current > 1) {
         portfolioScrollRef.current = PRODUCTS.length + 1;
         setPortfolioScroll(PRODUCTS.length + 1);
+      }
+    }
+
+    if (index === 2) {
+      boundaryHitTimeRef.current = Date.now();
+      const stackContainer = document.getElementById('stack-section-container');
+      if (stackContainer) {
+        const maxScroll = stackContainer.scrollHeight - stackContainer.clientHeight;
+        if (activeSectionRef.current < 2) {
+          stackScrollRef.current = 0;
+          gsap.set(stackContainer, { scrollTop: 0 });
+        } else if (activeSectionRef.current > 2) {
+          stackScrollRef.current = maxScroll > 0 ? maxScroll : 0;
+          gsap.set(stackContainer, { scrollTop: stackScrollRef.current });
+        }
       }
     }
 
@@ -106,10 +122,148 @@ export function usePageScroll(loadingComplete: boolean) {
     const obs = Observer.create({
       target: window,
       type: 'wheel,touch,pointer',
-      wheelSpeed: 1.0,
+      wheelSpeed: -1.0,
       tolerance: 20,
       preventDefault: true,
       onUp: () => {
+        if (!isAnimatingRef.current) {
+          if (activeSectionRef.current === 1) {
+            const limit = PRODUCTS.length + 1;
+            if (portfolioScrollRef.current < limit) {
+              const isMobile = window.innerWidth < 768;
+              if (isMobile) {
+                isAnimatingRef.current = true;
+                const nextScroll = Math.min(limit, Math.round(portfolioScrollRef.current) + 1.0);
+                portfolioScrollRef.current = nextScroll;
+                setPortfolioScroll(nextScroll);
+                setTimeout(() => {
+                  if (nextScroll === limit) {
+                    boundaryHitTimeRef.current = Date.now();
+                  }
+                  isAnimatingRef.current = false;
+                }, 800);
+              } else {
+                const nextScroll = Math.min(limit, portfolioScrollRef.current + 0.15);
+                portfolioScrollRef.current = nextScroll;
+                setPortfolioScroll(nextScroll);
+                if (nextScroll === limit) {
+                  boundaryHitTimeRef.current = Date.now();
+                }
+              }
+              return;
+            } else {
+              if (Date.now() - boundaryHitTimeRef.current < BOUNDARY_COOLDOWN) {
+                return;
+              }
+            }
+          }
+          if (activeSectionRef.current === 2) {
+            const stackContainer = document.getElementById('stack-section-container');
+            if (stackContainer) {
+              const maxScroll = stackContainer.scrollHeight - stackContainer.clientHeight;
+              if (maxScroll > 10) {
+                const isMobile = window.innerWidth < 768;
+                if (stackScrollRef.current < maxScroll) {
+                  if (isMobile) {
+                    isAnimatingRef.current = true;
+                    const scrollAmount = window.innerHeight * 0.5;
+                    const nextScroll = Math.min(maxScroll, stackScrollRef.current + scrollAmount);
+                    stackScrollRef.current = nextScroll;
+                    
+                    gsap.to(stackContainer, {
+                      scrollTop: nextScroll,
+                      duration: 0.8,
+                      ease: 'power2.out',
+                      onComplete: () => {
+                        if (nextScroll >= maxScroll) {
+                          boundaryHitTimeRef.current = Date.now();
+                        }
+                        isAnimatingRef.current = false;
+                      }
+                    });
+                  } else {
+                    const scrollAmount = 150;
+                    const nextScroll = Math.min(maxScroll, stackScrollRef.current + scrollAmount);
+                    stackScrollRef.current = nextScroll;
+                    
+                    gsap.to(stackContainer, {
+                      scrollTop: nextScroll,
+                      duration: 0.25,
+                      ease: 'power1.out',
+                      onComplete: () => {
+                        if (nextScroll >= maxScroll) {
+                          boundaryHitTimeRef.current = Date.now();
+                        }
+                      }
+                    });
+                  }
+                  return;
+                } else {
+                  if (Date.now() - boundaryHitTimeRef.current < BOUNDARY_COOLDOWN) {
+                    return;
+                  }
+                }
+              }
+            }
+          }
+          if (activeSectionRef.current === 3) {
+            if (aboutScrollRef.current < 4.0) {
+              isAnimatingRef.current = true;
+              const nextScroll = Math.min(4.0, Math.round(aboutScrollRef.current) + 1.0);
+              const tempObj = { value: aboutScrollRef.current };
+
+              gsap.to(tempObj, {
+                value: nextScroll,
+                duration: 0.8,
+                ease: 'power2.out',
+                onUpdate: () => {
+                  aboutScrollRef.current = tempObj.value;
+                  setAboutScroll(tempObj.value);
+                },
+                onComplete: () => {
+                  if (nextScroll === 4.0) {
+                    boundaryHitTimeRef.current = Date.now();
+                  }
+                  setTimeout(() => {
+                    isAnimatingRef.current = false;
+                  }, 150);
+                }
+              });
+              return;
+            } else {
+              if (Date.now() - boundaryHitTimeRef.current < BOUNDARY_COOLDOWN) {
+                return;
+              }
+            }
+          }
+          if (activeSectionRef.current === 4) {
+            if (contactScrollRef.current < 1.0) {
+              isAnimatingRef.current = true;
+              const tempObj = { value: contactScrollRef.current };
+              gsap.to(tempObj, {
+                value: 1.0,
+                duration: 0.8,
+                ease: 'power2.out',
+                onUpdate: () => {
+                  contactScrollRef.current = tempObj.value;
+                  setContactScroll(tempObj.value);
+                },
+                onComplete: () => {
+                  boundaryHitTimeRef.current = Date.now();
+                  setTimeout(() => {
+                    isAnimatingRef.current = false;
+                  }, 150);
+                }
+              });
+              return;
+            }
+            // Already at max, do nothing (last section)
+            return;
+          }
+          gotoSection(activeSectionRef.current + 1);
+        }
+      },
+      onDown: () => {
         if (!isAnimatingRef.current) {
           if (activeSectionRef.current === 1) {
             const isMobile = window.innerWidth < 768;
@@ -141,12 +295,51 @@ export function usePageScroll(loadingComplete: boolean) {
             }
           }
           if (activeSectionRef.current === 2) {
-            // Stack section scroll check: allow native scroll unless at top boundary
             const stackContainer = document.getElementById('stack-section-container');
             if (stackContainer) {
-              const isAtTop = stackContainer.scrollTop <= 5;
-              if (!isAtTop) {
-                return;
+              const maxScroll = stackContainer.scrollHeight - stackContainer.clientHeight;
+              if (maxScroll > 10) {
+                const isMobile = window.innerWidth < 768;
+                if (stackScrollRef.current > 0) {
+                  if (isMobile) {
+                    isAnimatingRef.current = true;
+                    const scrollAmount = window.innerHeight * 0.5;
+                    const nextScroll = Math.max(0, stackScrollRef.current - scrollAmount);
+                    stackScrollRef.current = nextScroll;
+                    
+                    gsap.to(stackContainer, {
+                      scrollTop: nextScroll,
+                      duration: 0.8,
+                      ease: 'power2.out',
+                      onComplete: () => {
+                        if (nextScroll <= 0) {
+                          boundaryHitTimeRef.current = Date.now();
+                        }
+                        isAnimatingRef.current = false;
+                      }
+                    });
+                  } else {
+                    const scrollAmount = 150;
+                    const nextScroll = Math.max(0, stackScrollRef.current - scrollAmount);
+                    stackScrollRef.current = nextScroll;
+                    
+                    gsap.to(stackContainer, {
+                      scrollTop: nextScroll,
+                      duration: 0.25,
+                      ease: 'power1.out',
+                      onComplete: () => {
+                        if (nextScroll <= 0) {
+                          boundaryHitTimeRef.current = Date.now();
+                        }
+                      }
+                    });
+                  }
+                  return;
+                } else {
+                  if (Date.now() - boundaryHitTimeRef.current < BOUNDARY_COOLDOWN) {
+                    return;
+                  }
+                }
               }
             }
           }
@@ -207,105 +400,6 @@ export function usePageScroll(loadingComplete: boolean) {
             }
           }
           gotoSection(activeSectionRef.current - 1);
-        }
-      },
-      onDown: () => {
-        if (!isAnimatingRef.current) {
-          if (activeSectionRef.current === 1) {
-            const limit = PRODUCTS.length + 1;
-            if (portfolioScrollRef.current < limit) {
-              const isMobile = window.innerWidth < 768;
-              if (isMobile) {
-                isAnimatingRef.current = true;
-                const nextScroll = Math.min(limit, Math.round(portfolioScrollRef.current) + 1.0);
-                portfolioScrollRef.current = nextScroll;
-                setPortfolioScroll(nextScroll);
-                setTimeout(() => {
-                  if (nextScroll === limit) {
-                    boundaryHitTimeRef.current = Date.now();
-                  }
-                  isAnimatingRef.current = false;
-                }, 800);
-              } else {
-                const nextScroll = Math.min(limit, portfolioScrollRef.current + 0.15);
-                portfolioScrollRef.current = nextScroll;
-                setPortfolioScroll(nextScroll);
-                if (nextScroll === limit) {
-                  boundaryHitTimeRef.current = Date.now();
-                }
-              }
-              return;
-            } else {
-              if (Date.now() - boundaryHitTimeRef.current < BOUNDARY_COOLDOWN) {
-                return;
-              }
-            }
-          }
-          if (activeSectionRef.current === 2) {
-            // Stack section scroll check: allow native scroll unless at bottom boundary
-            const stackContainer = document.getElementById('stack-section-container');
-            if (stackContainer) {
-              const isAtBottom = stackContainer.scrollTop + stackContainer.clientHeight >= stackContainer.scrollHeight - 5;
-              if (!isAtBottom) {
-                return;
-              }
-            }
-          }
-          if (activeSectionRef.current === 3) {
-            if (aboutScrollRef.current < 4.0) {
-              isAnimatingRef.current = true;
-              const nextScroll = Math.min(4.0, Math.round(aboutScrollRef.current) + 1.0);
-              const tempObj = { value: aboutScrollRef.current };
-
-              gsap.to(tempObj, {
-                value: nextScroll,
-                duration: 0.8,
-                ease: 'power2.out',
-                onUpdate: () => {
-                  aboutScrollRef.current = tempObj.value;
-                  setAboutScroll(tempObj.value);
-                },
-                onComplete: () => {
-                  if (nextScroll === 4.0) {
-                    boundaryHitTimeRef.current = Date.now();
-                  }
-                  setTimeout(() => {
-                    isAnimatingRef.current = false;
-                  }, 150);
-                }
-              });
-              return;
-            } else {
-              if (Date.now() - boundaryHitTimeRef.current < BOUNDARY_COOLDOWN) {
-                return;
-              }
-            }
-          }
-          if (activeSectionRef.current === 4) {
-            if (contactScrollRef.current < 1.0) {
-              isAnimatingRef.current = true;
-              const tempObj = { value: contactScrollRef.current };
-              gsap.to(tempObj, {
-                value: 1.0,
-                duration: 0.8,
-                ease: 'power2.out',
-                onUpdate: () => {
-                  contactScrollRef.current = tempObj.value;
-                  setContactScroll(tempObj.value);
-                },
-                onComplete: () => {
-                  boundaryHitTimeRef.current = Date.now();
-                  setTimeout(() => {
-                    isAnimatingRef.current = false;
-                  }, 150);
-                }
-              });
-              return;
-            }
-            // Already at max, do nothing (last section)
-            return;
-          }
-          gotoSection(activeSectionRef.current + 1);
         }
       }
     });

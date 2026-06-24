@@ -156,6 +156,25 @@ export default function AboutSection({ scrollProgress }: AboutSectionProps) {
           -webkit-text-fill-color: transparent;
           -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.25);
         }
+        .about-bg-title {
+          position: absolute;
+          left: 0;
+          width: 100%;
+          text-align: center;
+          top: 12vh;
+          font-size: 14vw;
+          transform: scale(1.2);
+          transform-origin: top center;
+        }
+        @media (min-width: 768px) {
+          .about-bg-title {
+            top: auto;
+            bottom: 36vh;
+            font-size: 15vw;
+            transform: scale(1.75);
+            transform-origin: bottom center;
+          }
+        }
       `}</style>
 
       {/* ═══════ SCROLLING BACKGROUND TRACK ═══════
@@ -207,10 +226,8 @@ export default function AboutSection({ scrollProgress }: AboutSectionProps) {
                   (titleRef as any).current = el;
                 }
               }}
-              className="absolute left-0 w-full text-center bottom-[24vh] sm:bottom-[32vh] md:bottom-[36vh] font-display text-[22vw] sm:text-[18vw] md:text-[15vw] font-black uppercase select-none leading-none z-0 pointer-events-none whitespace-nowrap fill-up-text"
+              className="about-bg-title font-display font-black uppercase select-none leading-none z-0 pointer-events-none whitespace-nowrap fill-up-text"
               style={{
-                transformOrigin: 'bottom center',
-                transform: 'scale(1.75, 1.75)',
                 '--fill-percent': i === 0 ? undefined : '100%',
               } as any}
             >
@@ -230,14 +247,14 @@ export default function AboutSection({ scrollProgress }: AboutSectionProps) {
       </div>
 
       {/* ═══════ PINNED CONTENT (stays fixed in place) ═══════ */}
-      <div className="absolute inset-0 flex items-end justify-center z-10 px-8">
+      <div className="absolute inset-0 flex items-end justify-center z-10 px-0 md:px-8">
 
 
 
         {/* Photo container — pinned at the bottom */}
         <div
           ref={imgRef}
-          className="w-[90vw] h-[60vh] sm:w-[70vw] sm:h-[75vh] md:w-[45vw] md:h-[85vh] overflow-hidden z-10 relative"
+          className="w-full h-[55vh] sm:w-[70vw] sm:h-[75vh] md:w-[45vw] md:h-[85vh] overflow-hidden z-10 relative"
         >
           <img
             src="/Marco1.png"

@@ -252,50 +252,50 @@ export default function HobbiesDoodles() {
       </div>
 
 
-      {/* ─── MOBILE COLLAGE VIEW (sitting in the free area top-[5vh] to top-[38vh]) ─── */}
+      {/* ─── MOBILE COLLAGE VIEW (sitting in the free area top-[23vh] to top-[42vh]) ─── */}
       <div className="md:hidden absolute inset-0 w-full h-full pointer-events-none">
         {/* Gamepad Trio Mobile */}
-        <GamepadDoodle className="absolute left-[3vw] top-[6vh] w-[60px]" />
-        <div className="doodle-item absolute left-[18vw] top-[6vh] w-[30px] pointer-events-auto select-none">
+        <GamepadDoodle className="absolute left-[3vw] top-[23vh] w-[60px]" />
+        <div className="doodle-item absolute left-[18vw] top-[23vh] w-[30px] pointer-events-auto select-none">
           <GamepadIcon />
         </div>
-        <div className="doodle-item absolute left-[26vw] top-[6vh] w-[40px] pointer-events-auto select-none">
+        <div className="doodle-item absolute left-[26vw] top-[23vh] w-[40px] pointer-events-auto select-none">
           <GamepadDiagram />
         </div>
 
         {/* Bass Trio Mobile */}
-        <BassDoodle className="absolute right-[3vw] top-[6vh] w-[60px]" />
-        <div className="doodle-item absolute right-[18vw] top-[5vh] w-[30px] pointer-events-auto select-none">
+        <BassDoodle className="absolute right-[3vw] top-[23vh] w-[60px]" />
+        <div className="doodle-item absolute right-[18vw] top-[23vh] w-[30px] pointer-events-auto select-none">
           <BassIcon />
         </div>
-        <div className="doodle-item absolute right-[26vw] top-[6vh] w-[40px] pointer-events-auto select-none">
+        <div className="doodle-item absolute right-[26vw] top-[23vh] w-[40px] pointer-events-auto select-none">
           <BassDiagram />
         </div>
 
         {/* Bezier Trio Mobile */}
-        <div className="doodle-item absolute left-[3vw] top-[16vh] w-[35px] pointer-events-auto select-none">
+        <div className="doodle-item absolute left-[3vw] top-[31vh] w-[35px] pointer-events-auto select-none">
           <BezierIcon />
         </div>
-        <div className="doodle-item absolute left-[12vw] top-[16vh] w-[35px] pointer-events-auto select-none">
+        <div className="doodle-item absolute left-[12vw] top-[31vh] w-[35px] pointer-events-auto select-none">
           <BezierDiagram />
         </div>
-        <BezierDoodle className="absolute left-[21vw] top-[16vh] w-[60px]" />
+        <BezierDoodle className="absolute left-[21vw] top-[31vh] w-[60px]" />
 
         {/* Radar Trio Mobile */}
-        <div className="doodle-item absolute right-[3vw] top-[16vh] w-[35px] pointer-events-auto select-none">
+        <div className="doodle-item absolute right-[3vw] top-[31vh] w-[35px] pointer-events-auto select-none">
           <RadarIcon />
         </div>
-        <div className="doodle-item absolute right-[12vw] top-[16vh] w-[35px] pointer-events-auto select-none">
+        <div className="doodle-item absolute right-[12vw] top-[31vh] w-[35px] pointer-events-auto select-none">
           <RadarDiagram />
         </div>
-        <RadarDoodle className="absolute right-[21vw] top-[16vh] w-[60px]" />
+        <RadarDoodle className="absolute right-[21vw] top-[31vh] w-[60px]" />
 
         {/* Sports Trio Mobile */}
-        <TacticDoodle className="absolute left-[12vw] top-[27vh] w-[60px]" />
-        <div className="doodle-item absolute left-[27vw] top-[27vh] w-[35px] pointer-events-auto select-none">
+        <TacticDoodle className="absolute left-[12vw] top-[39vh] w-[60px]" />
+        <div className="doodle-item absolute left-[27vw] top-[39vh] w-[35px] pointer-events-auto select-none">
           <SportsIcon />
         </div>
-        <div className="doodle-item absolute left-[37vw] top-[27vh] w-[40px] pointer-events-auto select-none">
+        <div className="doodle-item absolute left-[37vw] top-[39vh] w-[40px] pointer-events-auto select-none">
           <SportsDiagram />
         </div>
       </div>

@@ -33,34 +33,34 @@ export default function HeroSection({ bgIndex, setBgIndex, isHeroActive }: HeroS
 
 
       {/* Title & Subtitle: Layered behind the image sequence (z-5) */}
-      <div className="absolute left-[6vw] lg:left-[8vw] top-[22vh] lg:top-[25vh] z-5 flex flex-col pointer-events-none select-none">
-        
+      <div className="absolute left-[6vw] lg:left-[8vw] top-[14vh] lg:top-[25vh] z-5 flex flex-col pointer-events-none select-none">
+
         {/* Title: Elongated (scaleY) and condensed (Bebas Neue) */}
-        <h1 className="font-display text-[9vw] lg:text-[7vw] leading-[0.8] uppercase whitespace-nowrap text-[#f5f5f7]" 
-            style={{ 
-              transform: 'scaleY(1.4)', 
-              transformOrigin: 'left top',
-              letterSpacing: '-0.04em'
-            }}>
+        <h1 className="font-display text-[14vw] sm:text-[11vw] lg:text-[7vw] leading-[0.8] uppercase whitespace-nowrap text-[#f5f5f7]"
+          style={{
+            transform: 'scaleY(1.4)',
+            transformOrigin: 'left top',
+            letterSpacing: '-0.04em'
+          }}>
           Marco Palomo
         </h1>
 
         {/* Subtitle: "frontend developer / Web Designer" offset to account for vertical stretch of h1 */}
-        <p className="text-base sm:text-lg lg:text-xl font-light text-white/50 uppercase tracking-widest mt-[5vh] lg:mt-[3.5vh] font-sans flex items-center">
+        <div className="flex flex-col md:flex-row md:items-center gap-1.5 md:gap-4 mt-[6vh] lg:mt-[3.5vh] text-[10px] sm:text-xs md:text-sm lg:text-base font-light text-white/50 uppercase tracking-[0.2em] font-sans">
           <span>frontend developer</span>
-          <span className="w-2.5 h-2.5 border border-white/40 inline-block mx-4" style={{ borderWidth: '1.5px' }} />
+          <span className="hidden md:inline-block w-2.5 h-2.5 border border-white/40" style={{ borderWidth: '1.5px' }} />
           <span>Web Designer</span>
-        </p>
+        </div>
 
       </div>
 
-      <div className="absolute right-0 bottom-0 top-0 w-full lg:w-[48vw] h-[60vh] lg:h-full z-10 flex items-end overflow-hidden pointer-events-none">
+      <div className="absolute right-0 bottom-0 w-full lg:w-[48vw] h-[60vh] lg:h-full z-10 flex items-end overflow-hidden pointer-events-none">
         <EvaporatingPixels bgIndex={bgIndex} />
 
         {/* Reusable ImageSequence Component with custom styling, dynamic color mapping, and bottom fade-out mask */}
-        <ImageSequence 
+        <ImageSequence
           className="absolute inset-0 w-full h-full flex items-end justify-center lg:justify-end z-10 opacity-100"
-          imgClassName="w-full h-full object-contain object-bottom lg:object-right-bottom"
+          imgClassName="w-full h-full object-contain object-right-bottom"
           onTriggerFrame={handleFrameTrigger}
           style={{
             WebkitMaskImage: 'linear-gradient(to top, transparent, white 15%)',
@@ -76,10 +76,10 @@ export default function HeroSection({ bgIndex, setBgIndex, isHeroActive }: HeroS
 
       {/* Logo in the bottom-left corner */}
       <div className="absolute bottom-6 left-6 md:bottom-8 md:left-8 z-20">
-        <img 
-          src="/LOGO.png" 
-          alt="Logo" 
-          className="h-5 md:h-7 w-auto object-contain opacity-75 hover:opacity-100 transition-opacity duration-300 pointer-events-auto" 
+        <img
+          src="/LOGO.png"
+          alt="Logo"
+          className="h-5 md:h-7 w-auto object-contain opacity-75 hover:opacity-100 transition-opacity duration-300 pointer-events-auto"
         />
       </div>
     </section>
