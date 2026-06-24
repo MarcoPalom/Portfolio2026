@@ -124,7 +124,7 @@ export function usePageScroll(loadingComplete: boolean) {
       type: 'wheel,touch,pointer',
       wheelSpeed: -1.0,
       tolerance: 20,
-      preventDefault: true,
+      preventDefault: false,
       onUp: () => {
         if (!isAnimatingRef.current) {
           if (activeSectionRef.current === 1) {
@@ -162,41 +162,8 @@ export function usePageScroll(loadingComplete: boolean) {
             if (stackContainer) {
               const maxScroll = stackContainer.scrollHeight - stackContainer.clientHeight;
               if (maxScroll > 10) {
-                const isMobile = window.innerWidth < 768;
-                if (stackScrollRef.current < maxScroll) {
-                  if (isMobile) {
-                    isAnimatingRef.current = true;
-                    const scrollAmount = window.innerHeight * 0.5;
-                    const nextScroll = Math.min(maxScroll, stackScrollRef.current + scrollAmount);
-                    stackScrollRef.current = nextScroll;
-                    
-                    gsap.to(stackContainer, {
-                      scrollTop: nextScroll,
-                      duration: 0.8,
-                      ease: 'power2.out',
-                      onComplete: () => {
-                        if (nextScroll >= maxScroll) {
-                          boundaryHitTimeRef.current = Date.now();
-                        }
-                        isAnimatingRef.current = false;
-                      }
-                    });
-                  } else {
-                    const scrollAmount = 150;
-                    const nextScroll = Math.min(maxScroll, stackScrollRef.current + scrollAmount);
-                    stackScrollRef.current = nextScroll;
-                    
-                    gsap.to(stackContainer, {
-                      scrollTop: nextScroll,
-                      duration: 0.25,
-                      ease: 'power1.out',
-                      onComplete: () => {
-                        if (nextScroll >= maxScroll) {
-                          boundaryHitTimeRef.current = Date.now();
-                        }
-                      }
-                    });
-                  }
+                if (stackContainer.scrollTop < maxScroll - 10) {
+                  // Permitir scroll nativo dentro del stack sin avanzar de sección
                   return;
                 } else {
                   if (Date.now() - boundaryHitTimeRef.current < BOUNDARY_COOLDOWN) {
@@ -299,41 +266,8 @@ export function usePageScroll(loadingComplete: boolean) {
             if (stackContainer) {
               const maxScroll = stackContainer.scrollHeight - stackContainer.clientHeight;
               if (maxScroll > 10) {
-                const isMobile = window.innerWidth < 768;
-                if (stackScrollRef.current > 0) {
-                  if (isMobile) {
-                    isAnimatingRef.current = true;
-                    const scrollAmount = window.innerHeight * 0.5;
-                    const nextScroll = Math.max(0, stackScrollRef.current - scrollAmount);
-                    stackScrollRef.current = nextScroll;
-                    
-                    gsap.to(stackContainer, {
-                      scrollTop: nextScroll,
-                      duration: 0.8,
-                      ease: 'power2.out',
-                      onComplete: () => {
-                        if (nextScroll <= 0) {
-                          boundaryHitTimeRef.current = Date.now();
-                        }
-                        isAnimatingRef.current = false;
-                      }
-                    });
-                  } else {
-                    const scrollAmount = 150;
-                    const nextScroll = Math.max(0, stackScrollRef.current - scrollAmount);
-                    stackScrollRef.current = nextScroll;
-                    
-                    gsap.to(stackContainer, {
-                      scrollTop: nextScroll,
-                      duration: 0.25,
-                      ease: 'power1.out',
-                      onComplete: () => {
-                        if (nextScroll <= 0) {
-                          boundaryHitTimeRef.current = Date.now();
-                        }
-                      }
-                    });
-                  }
+                if (stackContainer.scrollTop > 10) {
+                  // Permitir scroll nativo dentro del stack sin retroceder de sección
                   return;
                 } else {
                   if (Date.now() - boundaryHitTimeRef.current < BOUNDARY_COOLDOWN) {
@@ -554,6 +488,18 @@ export function usePageScroll(loadingComplete: boolean) {
     };
     window.addEventListener('keydown', handleKeyDown);
 
+    const handlePreventDefault = (e: TouchEvent | WheelEvent) => {
+      const target = e.target as HTMLElement;
+      if (target && target.closest('#stack-section-container')) {
+        return;
+      }
+      if (e.cancelable) {
+        e.preventDefault();
+      }
+    };
+    window.addEventListener('wheel', handlePreventDefault, { passive: false });
+    window.addEventListener('touchmove', handlePreventDefault, { passive: false });
+
     const handleResize = () => {
       const index = activeSectionRef.current;
       let xTarget = '0vw';
@@ -580,6 +526,8 @@ export function usePageScroll(loadingComplete: boolean) {
       obs.kill();
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('wheel', handlePreventDefault);
+      window.removeEventListener('touchmove', handlePreventDefault);
     };
   }, [loadingComplete, gotoSection]);
 

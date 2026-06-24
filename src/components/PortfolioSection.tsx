@@ -30,20 +30,15 @@ export default function PortfolioSection({ scrollProgress }: PortfolioSectionPro
     const isMobile = window.innerWidth < 768;
     const viewportHeight = window.innerHeight;
 
-    // 1. Smoothly scroll the main list container vertically (120vh space multiplier)
+    // Smoothly scroll the main list container vertically (120vh space multiplier)
     const spacingHeight = viewportHeight * 1.2;
 
-    // On mobile use gsap.set (instant) to avoid expensive tweening per scroll tick
-    if (isMobile) {
-      gsap.set(scrollContainer, { y: -scrollProgress * spacingHeight });
-    } else {
-      gsap.to(scrollContainer, {
-        y: -scrollProgress * spacingHeight,
-        duration: 0.8,
-        ease: 'power2.out',
-        overwrite: 'auto'
-      });
-    }
+    gsap.to(scrollContainer, {
+      y: -scrollProgress * spacingHeight,
+      duration: 0.8,
+      ease: 'power2.out',
+      overwrite: 'auto'
+    });
 
     // 2. Animate main "Portafolio 2026" header to stretch like a magazine cover in the background
     if (scrollProgress <= 1.0) {
