@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 import { Observer } from 'gsap/Observer';
 import { PRODUCTS } from '../constants/portfolio';
@@ -24,102 +24,128 @@ export function usePageScroll(loadingComplete: boolean) {
   const contactScrollRef = useRef(0);
   const boundaryHitTimeRef = useRef<number>(0);
 
+  const gotoSection = useCallback((index: number) => {
+    if (index < 0 || index >= 5) return;
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+
+    isAnimatingRef.current = true;
+
+    // Handle step resetting depending on entry direction
+    if (index === 1) {
+      boundaryHitTimeRef.current = Date.now();
+      if (activeSectionRef.current < 1) {
+        portfolioScrollRef.current = 0.0;
+        setPortfolioScroll(0.0);
+      } else if (activeSectionRef.current > 1) {
+        portfolioScrollRef.current = PRODUCTS.length + 1;
+        setPortfolioScroll(PRODUCTS.length + 1);
+      }
+    }
+
+    if (index === 3) {
+      boundaryHitTimeRef.current = Date.now();
+      if (activeSectionRef.current < 3) {
+        aboutScrollRef.current = 0.0;
+        setAboutScroll(0.0);
+      } else if (activeSectionRef.current > 3) {
+        aboutScrollRef.current = 4.0;
+        setAboutScroll(4.0);
+      }
+    }
+
+    if (index === 4) {
+      boundaryHitTimeRef.current = Date.now();
+      contactScrollRef.current = 0.0;
+      setContactScroll(0.0);
+    }
+
+    activeSectionRef.current = index;
+    setActiveSection(index);
+    setBgIndex(index);
+
+    // Coordinates for each section (zigzag grid structure)
+    let xTarget = '0vw';
+    let yTarget = '0vh';
+
+    if (index === 1) {
+      xTarget = '-100vw';
+      yTarget = '-100vh';
+    } else if (index === 2) {
+      xTarget = '0vw';
+      yTarget = '-200vh';
+    } else if (index === 3) {
+      xTarget = '-100vw';
+      yTarget = '-300vh';
+    } else if (index === 4) {
+      xTarget = '0vw';
+      yTarget = '-400vh';
+    }
+
+    gsap.to(wrapper, {
+      x: xTarget,
+      y: yTarget,
+      duration: 1.2,
+      ease: 'power2.inOut',
+      overwrite: 'auto',
+      onComplete: () => {
+        setTimeout(() => {
+          isAnimatingRef.current = false;
+        }, 150);
+      }
+    });
+  }, []);
+
   useEffect(() => {
     if (!loadingComplete) return;
 
     const wrapper = wrapperRef.current;
     if (!wrapper) return;
 
-    const gotoSection = (index: number) => {
-      if (index < 0 || index >= 5) return;
-
-      isAnimatingRef.current = true;
-
-      // Handle step resetting depending on entry direction
-      if (index === 1) {
-        boundaryHitTimeRef.current = Date.now();
-        if (activeSectionRef.current < 1) {
-          portfolioScrollRef.current = 0.0;
-          setPortfolioScroll(0.0);
-        } else if (activeSectionRef.current > 1) {
-          portfolioScrollRef.current = PRODUCTS.length + 1;
-          setPortfolioScroll(PRODUCTS.length + 1);
-        }
-      }
-
-      if (index === 3) {
-        boundaryHitTimeRef.current = Date.now();
-        if (activeSectionRef.current < 3) {
-          aboutScrollRef.current = 0.0;
-          setAboutScroll(0.0);
-        } else if (activeSectionRef.current > 3) {
-          aboutScrollRef.current = 4.0;
-          setAboutScroll(4.0);
-        }
-      }
-
-      if (index === 4) {
-        boundaryHitTimeRef.current = Date.now();
-        contactScrollRef.current = 0.0;
-        setContactScroll(0.0);
-      }
-
-      activeSectionRef.current = index;
-      setActiveSection(index);
-      setBgIndex(index);
-
-      // Coordinates for each section (zigzag grid structure)
-      let xTarget = '0vw';
-      let yTarget = '0vh';
-
-      if (index === 1) {
-        xTarget = '-100vw';
-        yTarget = '-100vh';
-      } else if (index === 2) {
-        xTarget = '0vw';
-        yTarget = '-200vh';
-      } else if (index === 3) {
-        xTarget = '-100vw';
-        yTarget = '-300vh';
-      } else if (index === 4) {
-        xTarget = '0vw';
-        yTarget = '-400vh';
-      }
-
-      gsap.to(wrapper, {
-        x: xTarget,
-        y: yTarget,
-        duration: 1.2,
-        ease: 'power2.inOut',
-        overwrite: 'auto',
-        onComplete: () => {
-          setTimeout(() => {
-            isAnimatingRef.current = false;
-          }, 150);
-        }
-      });
-    };
-
-    // Observer setup for wheel & touch swipes (with 20px tolerance to prevent accidental triggers)
+    // Observer setup for wheel, touch swipes & pointer drag (with 20px tolerance to prevent accidental triggers)
     const obs = Observer.create({
       target: window,
-      type: 'wheel,touch',
+      type: 'wheel,touch,pointer',
       wheelSpeed: 1.0,
       tolerance: 20,
       preventDefault: true,
       onUp: () => {
         if (!isAnimatingRef.current) {
           if (activeSectionRef.current === 1) {
+            const isMobile = window.innerWidth < 768;
             if (portfolioScrollRef.current > 0.0) {
-              const nextScroll = Math.max(0.0, portfolioScrollRef.current - 0.15);
-              portfolioScrollRef.current = nextScroll;
-              setPortfolioScroll(nextScroll);
-              if (nextScroll === 0.0) {
-                boundaryHitTimeRef.current = Date.now();
+              if (isMobile) {
+                isAnimatingRef.current = true;
+                const nextScroll = Math.max(0.0, Math.round(portfolioScrollRef.current) - 1.0);
+                portfolioScrollRef.current = nextScroll;
+                setPortfolioScroll(nextScroll);
+                setTimeout(() => {
+                  if (nextScroll === 0.0) {
+                    boundaryHitTimeRef.current = Date.now();
+                  }
+                  isAnimatingRef.current = false;
+                }, 800);
+              } else {
+                const nextScroll = Math.max(0.0, portfolioScrollRef.current - 0.15);
+                portfolioScrollRef.current = nextScroll;
+                setPortfolioScroll(nextScroll);
+                if (nextScroll === 0.0) {
+                  boundaryHitTimeRef.current = Date.now();
+                }
               }
               return;
             } else {
               if (Date.now() - boundaryHitTimeRef.current < BOUNDARY_COOLDOWN) {
+                return;
+              }
+            }
+          }
+          if (activeSectionRef.current === 2) {
+            // Stack section scroll check: allow native scroll unless at top boundary
+            const stackContainer = document.getElementById('stack-section-container');
+            if (stackContainer) {
+              const isAtTop = stackContainer.scrollTop <= 5;
+              if (!isAtTop) {
                 return;
               }
             }
@@ -188,15 +214,39 @@ export function usePageScroll(loadingComplete: boolean) {
           if (activeSectionRef.current === 1) {
             const limit = PRODUCTS.length + 1;
             if (portfolioScrollRef.current < limit) {
-              const nextScroll = Math.min(limit, portfolioScrollRef.current + 0.15);
-              portfolioScrollRef.current = nextScroll;
-              setPortfolioScroll(nextScroll);
-              if (nextScroll === limit) {
-                boundaryHitTimeRef.current = Date.now();
+              const isMobile = window.innerWidth < 768;
+              if (isMobile) {
+                isAnimatingRef.current = true;
+                const nextScroll = Math.min(limit, Math.round(portfolioScrollRef.current) + 1.0);
+                portfolioScrollRef.current = nextScroll;
+                setPortfolioScroll(nextScroll);
+                setTimeout(() => {
+                  if (nextScroll === limit) {
+                    boundaryHitTimeRef.current = Date.now();
+                  }
+                  isAnimatingRef.current = false;
+                }, 800);
+              } else {
+                const nextScroll = Math.min(limit, portfolioScrollRef.current + 0.15);
+                portfolioScrollRef.current = nextScroll;
+                setPortfolioScroll(nextScroll);
+                if (nextScroll === limit) {
+                  boundaryHitTimeRef.current = Date.now();
+                }
               }
               return;
             } else {
               if (Date.now() - boundaryHitTimeRef.current < BOUNDARY_COOLDOWN) {
+                return;
+              }
+            }
+          }
+          if (activeSectionRef.current === 2) {
+            // Stack section scroll check: allow native scroll unless at bottom boundary
+            const stackContainer = document.getElementById('stack-section-container');
+            if (stackContainer) {
+              const isAtBottom = stackContainer.scrollTop + stackContainer.clientHeight >= stackContainer.scrollHeight - 5;
+              if (!isAtBottom) {
                 return;
               }
             }
@@ -437,7 +487,7 @@ export function usePageScroll(loadingComplete: boolean) {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('resize', handleResize);
     };
-  }, [loadingComplete]);
+  }, [loadingComplete, gotoSection]);
 
   return {
     activeSection,
@@ -448,5 +498,6 @@ export function usePageScroll(loadingComplete: boolean) {
     setBgIndex,
     containerRef,
     wrapperRef,
+    gotoSection,
   };
 }

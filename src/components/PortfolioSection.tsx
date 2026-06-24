@@ -108,11 +108,15 @@ export default function PortfolioSection({ scrollProgress }: PortfolioSectionPro
       
       // Calculate vertical height stretch based on distance from viewport center
       // Maximum stretch occurs at absScroll = 0.5 (boundary transition)
-      const stretchAmount = 0.24 * Math.sin(Math.min(1.0, absScroll) * Math.PI);
+      // Dampened on mobile to prevent clipping and extreme layouts
+      const stretchFactor = isMobile ? 0.06 : 0.24;
+      const stretchAmount = stretchFactor * Math.sin(Math.min(1.0, absScroll) * Math.PI);
       const scaleY = 1.0 + stretchAmount;
 
       // Subtle vertical parallax scrolling relative to the container scroll
-      const yOffset = localScroll * spacingHeight * 0.15;
+      // Dampened on mobile to keep items aligned properly inside viewport
+      const parallaxFactor = isMobile ? 0.04 : 0.15;
+      const yOffset = localScroll * spacingHeight * parallaxFactor;
 
       if (img) {
         gsap.to(img, {
@@ -130,7 +134,7 @@ export default function PortfolioSection({ scrollProgress }: PortfolioSectionPro
       if (txt) {
         gsap.to(txt, {
           y: yOffset,
-          scaleY,
+          scaleY: isMobile ? 1.0 : scaleY, // Prevent text warping on mobile
           scaleX: 1.0,
           skewY: 0,
           opacity: 1, // Keep fully visible, no fading

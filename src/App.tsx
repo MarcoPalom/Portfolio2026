@@ -44,7 +44,7 @@ function App() {
       {/* Main Container */}
       <div 
         ref={containerRef} 
-        className={`w-full h-screen overflow-hidden transition-colors duration-1000 ease-in-out ${backgrounds[bgIndex]}`}
+        className={`w-full h-screen overflow-hidden touch-none transition-colors duration-1000 ease-in-out ${backgrounds[bgIndex]}`}
       >
         {/* Slides Wrapper */}
         <div ref={wrapperRef} className="relative w-full h-full">
