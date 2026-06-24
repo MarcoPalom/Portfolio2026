@@ -24,12 +24,13 @@ export const PortfolioItem = forwardRef<HTMLDivElement, PortfolioItemProps>(({ p
           style={{ transformOrigin: 'center center' }}
         >
           <div 
-            className={`p-3 bg-white/5 backdrop-blur-md border border-white/10 rounded-[2rem] ${theme.glowShadow} w-full h-[220px] sm:h-[300px] md:h-[350px] lg:h-[380px] overflow-hidden group hover:border-white/20 transition-all duration-500 ease-out`}
+            className={`p-3 bg-white/5 lg:backdrop-blur-md border border-white/10 rounded-[2rem] ${theme.glowShadow} w-full h-[220px] sm:h-[300px] md:h-[350px] lg:h-[380px] overflow-hidden group hover:border-white/20 transition-all duration-500 ease-out`}
           >
             <div className="w-full h-full overflow-hidden rounded-[1.5rem]">
               <img 
                 src={product.image} 
                 alt={product.title} 
+                loading="lazy"
                 className="w-full h-full object-cover object-center group-hover:scale-[1.03] transition-transform duration-700 ease-out pointer-events-none" 
               />
             </div>

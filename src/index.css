@@ -60,6 +60,14 @@
     transition: all 0.3s ease;
   }
 
+  /* Remove expensive backdrop-filter on mobile */
+  @media (max-width: 767px) {
+    .glass, .glass-card {
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+  }
+
   .glass-card:hover {
     background-color: rgba(255, 255, 255, 0.1);
     border-color: rgba(255, 255, 255, 0.2);

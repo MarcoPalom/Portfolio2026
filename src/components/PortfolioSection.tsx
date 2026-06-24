@@ -33,12 +33,17 @@ export default function PortfolioSection({ scrollProgress }: PortfolioSectionPro
     // 1. Smoothly scroll the main list container vertically (120vh space multiplier)
     const spacingHeight = viewportHeight * 1.2;
 
-    gsap.to(scrollContainer, {
-      y: -scrollProgress * spacingHeight,
-      duration: 0.8,
-      ease: 'power2.out',
-      overwrite: 'auto'
-    });
+    // On mobile use gsap.set (instant) to avoid expensive tweening per scroll tick
+    if (isMobile) {
+      gsap.set(scrollContainer, { y: -scrollProgress * spacingHeight });
+    } else {
+      gsap.to(scrollContainer, {
+        y: -scrollProgress * spacingHeight,
+        duration: 0.8,
+        ease: 'power2.out',
+        overwrite: 'auto'
+      });
+    }
 
     // 2. Animate main "Portafolio 2026" header to stretch like a magazine cover in the background
     if (scrollProgress <= 1.0) {
@@ -163,13 +168,13 @@ export default function PortfolioSection({ scrollProgress }: PortfolioSectionPro
       ref={containerRef}
       className="w-full h-full min-h-screen flex flex-col items-center justify-center relative select-none bg-transparent overflow-hidden"
     >
-      {/* Background Glowing Orbs */}
-      <div className="absolute top-[20%] left-[20%] w-[50%] h-[50%] bg-purple-700/10 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-[20%] right-[20%] w-[45%] h-[45%] bg-brand-700/10 rounded-full blur-[140px] pointer-events-none" />
+      {/* Background Glowing Orbs — HIDDEN on mobile (blur is extremely expensive) */}
+      <div className="hidden lg:block absolute top-[20%] left-[20%] w-[50%] h-[50%] bg-purple-700/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="hidden lg:block absolute bottom-[20%] right-[20%] w-[45%] h-[45%] bg-brand-700/10 rounded-full blur-[140px] pointer-events-none" />
       
-      {/* Glowing highlight orb mapped to active index */}
+      {/* Glowing highlight orb — HIDDEN on mobile */}
       <div 
-        className={`absolute w-[40%] h-[40%] rounded-full blur-[150px] pointer-events-none transition-all duration-1000 ease-in-out ${
+        className={`hidden lg:block absolute w-[40%] h-[40%] rounded-full blur-[150px] pointer-events-none transition-all duration-1000 ease-in-out ${
           activeIdx === 0 ? 'top-[20%] left-[20%] bg-purple-500/10' :
           activeIdx === 1 ? 'top-[20%] right-[20%] bg-purple-500/10' :
           activeIdx === 2 ? 'bottom-[20%] left-[20%] bg-emerald-500/10' :
@@ -179,8 +184,8 @@ export default function PortfolioSection({ scrollProgress }: PortfolioSectionPro
         }`} 
       />
 
-      {/* Giant Cyberpunk Background Typography */}
-      {PRODUCTS.map((product, idx) => (
+      {/* Giant Cyberpunk Background Typography — HIDDEN on mobile to save paint cost */}
+      {typeof window !== 'undefined' && window.innerWidth >= 768 && PRODUCTS.map((product, idx) => (
         <div
           key={`bg-text-${product.id}`}
           ref={(el) => { bigTextRefs.current[idx] = el; }}

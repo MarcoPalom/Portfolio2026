@@ -15,7 +15,7 @@ export const PRODUCTS: Product[] = [
     title: 'INKsports System',
     subtitle: 'Frontend System Showcase',
     description: 'In my first professional role, I co-developed this comprehensive system as a Frontend Developer in a team of two. The platform features a secure login process, role-based access control (RBAC), inventory management with full CRUD systems, and fully optimized responsiveness across all devices.',
-    image: '/Screen1.png',
+    image: '/Screen1.webp',
     tags: ['React', 'TypeScript', 'Tailwind CSS', 'Ant Design'],
     color: 'purple',
     bigText: 'SPORTS'
@@ -45,7 +45,7 @@ export const PRODUCTS: Product[] = [
     title: 'FICSM 2025',
     subtitle: 'Interactive Venue & Event Portal',
     description: 'Developed from scratch for the International Film Festival en la Costa del Seno Mexicano 2025, I built a custom venue and event management web portal using React, Next.js, and Tailwind CSS. The system enables users to easily discover local events near their location via search filters, location tags, and an interactive festival schedule.',
-    image: '/Screen4.png',
+    image: '/Screen4.webp',
     tags: ['React', 'Next.js', 'Tailwind CSS'],
     color: 'purple',
     bigText: 'VENUE'
@@ -55,7 +55,7 @@ export const PRODUCTS: Product[] = [
     title: 'Doty Landing Page',
     subtitle: 'Premium Startup Showcase',
     description: 'Representing my most comprehensive design achievement, I developed a modern, high-impact landing page for Doty, a startup co-founded with a friend. Leveraging React, Next.js, and Tailwind CSS, I created sophisticated visuals in Adobe Illustrator and Photoshop, and built complex, fluid scroll-driven animations using GSAP to deliver an immersive product showcase.',
-    image: '/Screen5.png',
+    image: '/Screen5.webp',
     tags: ['React', 'Next.js', 'GSAP', 'Tailwind CSS'],
     color: 'orange',
     bigText: 'DOTY'

@@ -85,9 +85,9 @@ export default function ContactSection({ scrollProgress }: ContactSectionProps) 
 
   return (
     <div className="w-full h-full min-h-screen flex flex-col items-center justify-center relative px-4 sm:px-8 select-none overflow-hidden">
-      {/* Cinematic Glowing Background Orb */}
-      <div className="absolute bottom-[30%] right-[20%] w-[40%] h-[40%] bg-blue-700/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute top-[20%] left-[10%] w-[25%] h-[25%] bg-cyan-600/5 rounded-full blur-[100px] pointer-events-none" />
+      {/* Cinematic Glowing Background Orb — HIDDEN on mobile */}
+      <div className="hidden lg:block absolute bottom-[30%] right-[20%] w-[40%] h-[40%] bg-blue-700/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="hidden lg:block absolute top-[20%] left-[10%] w-[25%] h-[25%] bg-cyan-600/5 rounded-full blur-[100px] pointer-events-none" />
 
       {/* Title Container (always visible) */}
       <div className="flex flex-col items-center justify-center text-center z-10 pointer-events-none">

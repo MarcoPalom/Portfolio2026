@@ -7,7 +7,7 @@ interface LoaderProps {
 const allFrames = Array.from({ length: 20 }, (_, i) => {
   const part1 = i.toString().padStart(4, '0');
   const part2 = (i + 1).toString().padStart(2, '0');
-  return `/secc1/marco_${part1}_${part2}.png.png`;
+  return `/secc1/marco_${part1}_${part2}.png.webp`;
 });
 
 // On mobile, only preload every other frame (10 instead of 20)
@@ -15,16 +15,16 @@ const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 const frames = isMobile ? allFrames.filter((_, i) => i % 2 === 0) : allFrames;
 
 const productImages = [
-  '/Screen1.png',
+  '/Screen1.webp',
   '/Screen2.jpeg',
   '/Screen3.jpeg',
-  '/Screen4.png',
-  '/Screen5.png',
+  '/Screen4.webp',
+  '/Screen5.webp',
 ];
 
 const generalImages = [
   '/LOGO.png',
-  '/Marco1.png',
+  '/Marco1.webp',
 ];
 
 // On mobile, defer product images (they're on a different section)

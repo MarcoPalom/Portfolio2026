@@ -194,9 +194,9 @@ export default function AboutSection({ scrollProgress }: AboutSectionProps) {
               background: panel.bg,
             }}
           >
-            {/* Atmospheric glow blob */}
+            {/* Atmospheric glow blob — HIDDEN on mobile (blur extremely expensive) */}
             <div
-              className="absolute left-1/2 -translate-x-1/2 rounded-full blur-[140px] md:blur-[200px] pointer-events-none"
+              className="hidden md:block absolute left-1/2 -translate-x-1/2 rounded-full blur-[140px] md:blur-[200px] pointer-events-none"
               style={{
                 bottom: '25vh',
                 width: '60vw',
@@ -257,8 +257,9 @@ export default function AboutSection({ scrollProgress }: AboutSectionProps) {
           className="w-full h-[55vh] sm:w-[70vw] sm:h-[75vh] md:w-[45vw] md:h-[85vh] overflow-hidden z-10 relative"
         >
           <img
-            src="/Marco1.png"
+            src="/Marco1.webp"
             alt="Marco"
+            loading="lazy"
             className="w-full h-full object-cover object-[50%_15%]"
           />
         </div>

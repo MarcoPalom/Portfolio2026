@@ -14,7 +14,7 @@ const totalFrames = 20;
 const allFramePaths = Array.from({ length: totalFrames }, (_, i) => {
   const part1 = i.toString().padStart(4, '0');
   const part2 = (i + 1).toString().padStart(2, '0');
-  return `/secc1/marco_${part1}_${part2}.png.png`;
+  return `/secc1/marco_${part1}_${part2}.png.webp`;
 });
 
 export default function ImageSequence({ className, onTriggerFrame, style, imgStyle }: ImageSequenceProps) {

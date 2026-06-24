@@ -108,9 +108,9 @@ export default function CookingSection({ scrollProgress }: CookingSectionProps) 
         }
       `}</style>
 
-      {/* Background Heat Wave & Shifting Color Glow */}
+      {/* Background Heat Wave & Shifting Color Glow — HIDDEN on mobile */}
       <div 
-        className="absolute w-[45%] h-[45%] rounded-full pointer-events-none z-0 mix-blend-screen animate-[flame-glow_5s_ease-in-out_infinite,glow-color-shift_12s_linear_infinite]"
+        className="hidden md:block absolute w-[45%] h-[45%] rounded-full pointer-events-none z-0 mix-blend-screen animate-[flame-glow_5s_ease-in-out_infinite,glow-color-shift_12s_linear_infinite]"
         style={{ bottom: '15%' }}
       />
 

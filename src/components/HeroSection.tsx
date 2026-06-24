@@ -1,14 +1,24 @@
 import ImageSequence from './ImageSequence';
 import EvaporatingPixels from './EvaporatingPixels';
 
-// Cinematic holographic filters corresponding to each background color (softened)
-const holographicFilters = [
+const IS_MOBILE = typeof window !== 'undefined' && window.innerWidth < 768;
+
+// Cinematic holographic filters — drop-shadow removed on mobile (very expensive GPU filter)
+const holographicFiltersDesktop = [
   'sepia(1) saturate(2.8) hue-rotate(185deg) brightness(0.85) contrast(1.05) drop-shadow(0 0 20px rgba(59,130,246,0.4))',
   'sepia(1) saturate(3.2) hue-rotate(245deg) brightness(0.85) contrast(1.05) drop-shadow(0 0 20px rgba(168,85,247,0.4))',
   'sepia(1) saturate(3.8) hue-rotate(325deg) brightness(0.9) contrast(1.0) drop-shadow(0 0 20px rgba(239,68,68,0.4))',
   'sepia(1) saturate(3.0) hue-rotate(65deg) brightness(0.9) contrast(1.1) drop-shadow(0 0 20px rgba(34,197,94,0.4))',
-  'sepia(1) saturate(2.8) hue-rotate(185deg) brightness(0.85) contrast(1.05) drop-shadow(0 0 20px rgba(59,130,246,0.4))', // loop index 4 (same as 0)
+  'sepia(1) saturate(2.8) hue-rotate(185deg) brightness(0.85) contrast(1.05) drop-shadow(0 0 20px rgba(59,130,246,0.4))',
 ];
+const holographicFiltersMobile = [
+  'sepia(1) saturate(2.0) hue-rotate(185deg) brightness(0.85) contrast(1.05)',
+  'sepia(1) saturate(2.4) hue-rotate(245deg) brightness(0.85) contrast(1.05)',
+  'sepia(1) saturate(2.8) hue-rotate(325deg) brightness(0.9) contrast(1.0)',
+  'sepia(1) saturate(2.2) hue-rotate(65deg) brightness(0.9) contrast(1.1)',
+  'sepia(1) saturate(2.0) hue-rotate(185deg) brightness(0.85) contrast(1.05)',
+];
+const holographicFilters = IS_MOBILE ? holographicFiltersMobile : holographicFiltersDesktop;
 
 interface HeroSectionProps {
   bgIndex: number;
@@ -26,9 +36,9 @@ export default function HeroSection({ bgIndex, setBgIndex, isHeroActive }: HeroS
 
   return (
     <section className="relative min-h-screen w-full flex items-center overflow-hidden bg-transparent">
-      {/* Background Cinematic Orbs */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-brand-700/20 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[10%] w-[60%] h-[60%] bg-pink-700/10 rounded-full blur-[160px] pointer-events-none animate-pulse" style={{ animationDuration: '8s' }} />
+      {/* Background Cinematic Orbs — HIDDEN on mobile (blur is extremely expensive on mobile GPU) */}
+      <div className="hidden lg:block absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-brand-700/20 rounded-full blur-[140px] pointer-events-none" />
+      <div className="hidden lg:block absolute bottom-[-10%] right-[10%] w-[60%] h-[60%] bg-pink-700/10 rounded-full blur-[160px] pointer-events-none animate-pulse" style={{ animationDuration: '8s' }} />
 
 
 
@@ -55,7 +65,8 @@ export default function HeroSection({ bgIndex, setBgIndex, isHeroActive }: HeroS
       </div>
 
       <div className="absolute right-0 bottom-0 w-full lg:w-[48vw] h-[60vh] lg:h-full z-10 flex items-end overflow-hidden pointer-events-none">
-        <EvaporatingPixels bgIndex={bgIndex} />
+        {/* EvaporatingPixels disabled on mobile — canvas animation too heavy */}
+        {!IS_MOBILE && <EvaporatingPixels bgIndex={bgIndex} />}
 
         {/* Reusable ImageSequence Component with custom styling, dynamic color mapping, and bottom fade-out mask */}
         <ImageSequence
