@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useMemo } from 'react';
 
 interface ImageSequenceProps {
   className?: string;
@@ -27,9 +27,11 @@ export default function ImageSequence({ className, onTriggerFrame, style, imgSty
 
   // Determine frame set — mobile uses every other frame (10 frames)
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  const framePaths = isMobile
-    ? allFramePaths.filter((_, i) => i % 2 === 0)
-    : allFramePaths;
+  const framePaths = useMemo(() => {
+    return isMobile
+      ? allFramePaths.filter((_, i) => i % 2 === 0)
+      : allFramePaths;
+  }, [isMobile]);
   const frameCount = framePaths.length;
 
   // Draw a single frame to the canvas
@@ -56,16 +58,29 @@ export default function ImageSequence({ className, onTriggerFrame, style, imgSty
     const drawY = canvasH - drawH;
 
     ctx.drawImage(img, drawX, drawY, drawW, drawH);
+
+    // Apply linear gradient fade-out mask directly on the canvas to avoid iOS WebKit CSS mask-image bugs
+    ctx.save();
+    ctx.globalCompositeOperation = 'destination-in';
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvasH);
+    gradient.addColorStop(0, 'white');
+    gradient.addColorStop(0.85, 'white');
+    gradient.addColorStop(1, 'transparent');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvasW, canvasH);
+    ctx.restore();
   }, []);
 
   // Preload images into JS Image objects (NOT in DOM)
   useEffect(() => {
+    let active = true;
     let loadedCount = 0;
     const images: HTMLImageElement[] = [];
 
     framePaths.forEach((src, idx) => {
       const img = new Image();
       img.onload = () => {
+        if (!active) return;
         loadedCount++;
         if (loadedCount === framePaths.length) {
           loadedRef.current = true;
@@ -74,13 +89,22 @@ export default function ImageSequence({ className, onTriggerFrame, style, imgSty
         }
       };
       img.onerror = () => {
+        if (!active) return;
         loadedCount++;
+        if (loadedCount === framePaths.length) {
+          loadedRef.current = true;
+          drawFrame(0);
+        }
       };
       img.src = src;
       images[idx] = img;
     });
 
     imagesRef.current = images;
+
+    return () => {
+      active = false;
+    };
   }, [framePaths, drawFrame]);
 
   // Handle canvas sizing

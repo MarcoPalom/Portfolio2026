@@ -44,7 +44,7 @@ function App() {
       {/* Main Container */}
       <div 
         ref={containerRef} 
-        className={`w-full h-screen overflow-hidden touch-none transition-colors duration-1000 ease-in-out ${backgrounds[bgIndex]}`}
+        className={`w-full h-[100dvh] overflow-hidden touch-none transition-colors duration-1000 ease-in-out ${backgrounds[bgIndex]}`}
       >
         {/* Slides Wrapper */}
         <div ref={wrapperRef} className="relative w-full h-full">
@@ -61,28 +61,28 @@ function App() {
           </div>
 
           {/* Section 2: Portafolio */}
-          <div className="absolute left-[100vw] top-[100vh] w-full h-full">
+          <div className="absolute left-[100%] top-[100%] w-full h-full">
             {Math.abs(activeSection - 1) <= 1 && (
               <PortfolioSection scrollProgress={portfolioScroll} />
             )}
           </div>
 
           {/* Section 3: Stack */}
-          <div className="absolute left-0 top-[200vh] w-full h-full">
+          <div className="absolute left-0 top-[200%] w-full h-full">
             {Math.abs(activeSection - 2) <= 1 && (
               <StackSection />
             )}
           </div>
 
           {/* Section 4: About Me */}
-          <div className="absolute left-[100vw] top-[300vh] w-full h-full">
+          <div className="absolute left-[100%] top-[300%] w-full h-full">
             {Math.abs(activeSection - 3) <= 1 && (
               <AboutSection scrollProgress={aboutScroll} />
             )}
           </div>
 
           {/* Section 5: Contacto */}
-          <div className="absolute left-0 top-[400vh] w-full h-full">
+          <div className="absolute left-0 top-[400%] w-full h-full">
             {Math.abs(activeSection - 4) <= 1 && (
               <ContactSection scrollProgress={contactScroll} />
             )}

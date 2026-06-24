@@ -81,21 +81,21 @@ export function usePageScroll(loadingComplete: boolean) {
     setBgIndex(index);
 
     // Coordinates for each section (zigzag grid structure)
-    let xTarget = '0vw';
-    let yTarget = '0vh';
+    let xTarget = '0%';
+    let yTarget = '0%';
 
     if (index === 1) {
-      xTarget = '-100vw';
-      yTarget = '-100vh';
+      xTarget = '-100%';
+      yTarget = '-100%';
     } else if (index === 2) {
-      xTarget = '0vw';
-      yTarget = '-200vh';
+      xTarget = '0%';
+      yTarget = '-200%';
     } else if (index === 3) {
-      xTarget = '-100vw';
-      yTarget = '-300vh';
+      xTarget = '-100%';
+      yTarget = '-300%';
     } else if (index === 4) {
-      xTarget = '0vw';
-      yTarget = '-400vh';
+      xTarget = '0%';
+      yTarget = '-400%';
     }
 
     gsap.to(wrapper, {
@@ -502,21 +502,21 @@ export function usePageScroll(loadingComplete: boolean) {
 
     const handleResize = () => {
       const index = activeSectionRef.current;
-      let xTarget = '0vw';
-      let yTarget = '0vh';
+      let xTarget = '0%';
+      let yTarget = '0%';
 
       if (index === 1) {
-        xTarget = '-100vw';
-        yTarget = '-100vh';
+        xTarget = '-100%';
+        yTarget = '-100%';
       } else if (index === 2) {
-        xTarget = '0vw';
-        yTarget = '-200vh';
+        xTarget = '0%';
+        yTarget = '-200%';
       } else if (index === 3) {
-        xTarget = '-100vw';
-        yTarget = '-300vh';
+        xTarget = '-100%';
+        yTarget = '-300%';
       } else if (index === 4) {
-        xTarget = '0vw';
-        yTarget = '-400vh';
+        xTarget = '0%';
+        yTarget = '-400%';
       }
       gsap.set(wrapper, { x: xTarget, y: yTarget });
     };

@@ -73,10 +73,6 @@ export default function HeroSection({ bgIndex, setBgIndex, isHeroActive }: HeroS
           className="absolute inset-0 w-full h-full flex items-end justify-center lg:justify-end z-10 opacity-100"
           imgClassName="w-full h-full object-contain object-right-bottom"
           onTriggerFrame={handleFrameTrigger}
-          style={{
-            WebkitMaskImage: 'linear-gradient(to top, transparent, white 15%)',
-            maskImage: 'linear-gradient(to top, transparent, white 15%)',
-          }}
           imgStyle={{
             filter: holographicFilters[bgIndex],
             transition: 'filter 1.0s ease-in-out', // Smoothly transitions the face color to match the background
