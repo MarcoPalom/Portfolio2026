@@ -50,10 +50,10 @@ function hexToRgb(hex: string) {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result
     ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16),
-      }
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16),
+    }
     : { r: 255, g: 255, b: 255 };
 }
 
@@ -83,18 +83,24 @@ export default function EvaporatingPixels({ bgIndex }: EvaporatingPixelsProps) {
     if (!ctx) return;
 
     let animationFrameId: number;
-    const GRID_SIZE = 12; // Size of each pixel art block
+    const isMobile = window.innerWidth < 1024;
+    const GRID_SIZE = isMobile ? 20 : 12; // Larger blocks on mobile = fewer draw calls
+    const MAX_SPARKS = isMobile ? 30 : 200; // Cap sparks on mobile
     let sparks: Spark[] = [];
+    let frameCount = 0; // For frame skipping on mobile
 
     const resizeCanvas = () => {
       const parentW = canvas.parentElement?.clientWidth || window.innerWidth;
       const parentH = canvas.parentElement?.clientHeight || window.innerHeight;
-      
-      // Align canvas to integer multiples of GRID_SIZE
-      canvas.width = Math.ceil(parentW / GRID_SIZE) * GRID_SIZE;
-      canvas.height = Math.ceil(parentH / GRID_SIZE) * GRID_SIZE;
+
+      // On mobile, reduce canvas resolution for performance
+      const scale = isMobile ? 0.5 : 1;
+      canvas.width = Math.ceil((parentW * scale) / GRID_SIZE) * GRID_SIZE;
+      canvas.height = Math.ceil((parentH * scale) / GRID_SIZE) * GRID_SIZE;
+      canvas.style.width = `${parentW}px`;
+      canvas.style.height = `${parentH}px`;
     };
-    
+
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
@@ -137,6 +143,8 @@ export default function EvaporatingPixels({ bgIndex }: EvaporatingPixelsProps) {
     };
 
     const render = () => {
+      // Throttle to ~30fps on mobile (skip every other frame)
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const w = canvas.width;
@@ -144,6 +152,12 @@ export default function EvaporatingPixels({ bgIndex }: EvaporatingPixelsProps) {
       const cols = w / GRID_SIZE;
       const rows = h / GRID_SIZE;
       const isMobile = window.innerWidth < 1024;
+
+      frameCount++;
+      if (isMobile && frameCount % 2 !== 0) {
+        animationFrameId = requestAnimationFrame(render);
+        return;
+      }
 
       // ─── 1. DETECT COLOR SWITCH TO FLARE UP (AVIVAR) ───
       if (bgIndexRef.current !== lastBgIndexRef.current) {
@@ -186,13 +200,13 @@ export default function EvaporatingPixels({ bgIndex }: EvaporatingPixelsProps) {
 
       // ─── 3. DRAW CONTOUR PIXEL-ART OUTLINE ───
       const center = isMobile ? w * 0.5 : w * 0.72;
-      
+
       // During flare up (avivar), the outline expands outwards by up to 30%
       const baseScale = isMobile ? 1.7 : 0.95;
       const scale = baseScale * (1.0 + flareIntensityRef.current * 0.3);
-      
+
       const topRowIndex = Math.floor(0.20 * rows);
-      
+
       // Slower, more stable time progression
       const time = Date.now() * 0.0012;
 
@@ -228,8 +242,8 @@ export default function EvaporatingPixels({ bgIndex }: EvaporatingPixelsProps) {
           const capDepth = gridY - topRowIndex;
           ctx.fillStyle =
             capDepth === 0 ? borderStyle :
-            capDepth === 1 ? middleStyle :
-            capDepth === 2 ? coreStyle : hotStyle;
+              capDepth === 1 ? middleStyle :
+                capDepth === 2 ? coreStyle : hotStyle;
 
           // Draw horizontal cells to the right to seal the head crown
           for (let dx = 4; dx < 10; dx++) {
@@ -239,15 +253,17 @@ export default function EvaporatingPixels({ bgIndex }: EvaporatingPixelsProps) {
 
         // Spawn pixel sparks breaking off to the left (wind/evaporation direction)
         // Spawning rate and speed explode during flare up!
-        const spawnChance = 0.84 - flareIntensityRef.current * 0.35;
-        if (Math.random() > spawnChance) {
+        // On mobile: much lower spawn rate and capped count
+        const baseSpawnChance = isMobile ? 0.94 : 0.84;
+        const spawnChance = baseSpawnChance - flareIntensityRef.current * 0.35;
+        if (Math.random() > spawnChance && sparks.length < MAX_SPARKS) {
           const flareMult = 1.0 + flareIntensityRef.current * 2.0;
           sparks.push({
             gridX: snappedGridX - 1,
             gridY: gridY,
             life: 1.0,
-            decay: (0.025 + Math.random() * 0.045) / (1.0 + flareIntensityRef.current * 0.6), // sparks last longer when flaring!
-            vx: (-0.4 - Math.random() * 1.2) * flareMult, // shoot out faster
+            decay: (0.025 + Math.random() * 0.045) / (1.0 + flareIntensityRef.current * 0.6),
+            vx: (-0.4 - Math.random() * 1.2) * flareMult,
             vy: (-0.3 - Math.random() * 0.7) * flareMult,
             colorType: Math.random() > 0.55 ? 'border' : 'middle',
           });

@@ -4,11 +4,15 @@ interface LoaderProps {
   onComplete: () => void;
 }
 
-const frames = Array.from({ length: 20 }, (_, i) => {
+const allFrames = Array.from({ length: 20 }, (_, i) => {
   const part1 = i.toString().padStart(4, '0');
   const part2 = (i + 1).toString().padStart(2, '0');
   return `/secc1/marco_${part1}_${part2}.png.png`;
 });
+
+// On mobile, only preload every other frame (10 instead of 20)
+const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+const frames = isMobile ? allFrames.filter((_, i) => i % 2 === 0) : allFrames;
 
 const productImages = [
   '/Screen1.png',
@@ -23,7 +27,10 @@ const generalImages = [
   '/Marco1.png',
 ];
 
-const ALL_ASSETS = [...frames, ...productImages, ...generalImages];
+// On mobile, defer product images (they're on a different section)
+const CRITICAL_ASSETS = [...frames, ...generalImages];
+const DEFERRED_ASSETS = productImages;
+const ALL_ASSETS = isMobile ? CRITICAL_ASSETS : [...CRITICAL_ASSETS, ...DEFERRED_ASSETS];
 
 export default function Loader({ onComplete }: LoaderProps) {
   const [progress, setProgress] = useState(0);

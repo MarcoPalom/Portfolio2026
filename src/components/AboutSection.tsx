@@ -234,14 +234,14 @@ export default function AboutSection({ scrollProgress }: AboutSectionProps) {
               {TITLES[i]}
             </h1>
 
-            {/* Render HobbiesDoodles only on panel 1 (MIS HOBBYS) */}
-            {i === 1 && <HobbiesDoodles />}
+            {/* Render HobbiesDoodles only on panel 1 (MIS HOBBYS) — conditionally to save GPU */}
+            {i === 1 && scrollProgress > 1.2 && scrollProgress < 2.8 && <HobbiesDoodles />}
 
-            {/* Render InterestsDoodles only on panel 2 (MIS GUSTOS / MY INTERESTS) */}
-            {i === 2 && <InterestsDoodles />}
+            {/* Render InterestsDoodles only on panel 2 (MIS GUSTOS / MY INTERESTS) — conditionally */}
+            {i === 2 && scrollProgress > 2.2 && scrollProgress < 3.8 && <InterestsDoodles />}
 
-            {/* Render MeDoodles only on panel 3 (YO / ME) */}
-            {i === 3 && <MeDoodles />}
+            {/* Render MeDoodles only on panel 3 (YO / ME) — conditionally */}
+            {i === 3 && scrollProgress > 3.2 && <MeDoodles />}
           </div>
         ))}
       </div>

@@ -51,31 +51,41 @@ function App() {
           
           {/* Section 1: Hero */}
           <div className="absolute left-0 top-0 w-full h-full">
-            <HeroSection 
-              bgIndex={bgIndex} 
-              setBgIndex={setBgIndex} 
-              isHeroActive={activeSection === 0} 
-            />
+            {Math.abs(activeSection - 0) <= 1 && (
+              <HeroSection 
+                bgIndex={bgIndex} 
+                setBgIndex={setBgIndex} 
+                isHeroActive={activeSection === 0} 
+              />
+            )}
           </div>
 
           {/* Section 2: Portafolio */}
           <div className="absolute left-[100vw] top-[100vh] w-full h-full">
-            <PortfolioSection scrollProgress={portfolioScroll} />
+            {Math.abs(activeSection - 1) <= 1 && (
+              <PortfolioSection scrollProgress={portfolioScroll} />
+            )}
           </div>
 
           {/* Section 3: Stack */}
           <div className="absolute left-0 top-[200vh] w-full h-full">
-            <StackSection />
+            {Math.abs(activeSection - 2) <= 1 && (
+              <StackSection />
+            )}
           </div>
 
           {/* Section 4: About Me */}
           <div className="absolute left-[100vw] top-[300vh] w-full h-full">
-            <AboutSection scrollProgress={aboutScroll} />
+            {Math.abs(activeSection - 3) <= 1 && (
+              <AboutSection scrollProgress={aboutScroll} />
+            )}
           </div>
 
           {/* Section 5: Contacto */}
           <div className="absolute left-0 top-[400vh] w-full h-full">
-            <ContactSection scrollProgress={contactScroll} />
+            {Math.abs(activeSection - 4) <= 1 && (
+              <ContactSection scrollProgress={contactScroll} />
+            )}
           </div>
 
         </div>

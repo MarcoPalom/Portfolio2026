@@ -5,7 +5,13 @@ export default function CustomCursor() {
   const [hovered, setHovered] = useState(false);
   const [hidden, setHidden] = useState(true);
 
+  // Skip entirely on touch/mobile devices — no cursor needed
+  const isTouchDevice = typeof window !== 'undefined' && (
+    'ontouchstart' in window || window.matchMedia('(hover: none)').matches
+  );
+
   useEffect(() => {
+    if (isTouchDevice) return;
     const handleMouseMove = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY });
       if (hidden) setHidden(false);
@@ -56,7 +62,7 @@ export default function CustomCursor() {
     };
   }, [hidden]);
 
-  if (hidden) return null;
+  if (isTouchDevice || hidden) return null;
 
   return (
     <>
