@@ -15,7 +15,7 @@ interface DoodleProps {
 
 // ─── Me SVG Doodles ──────────────────────────────────────────────────
 
-// 1. Shield Doodle (Reliable / Confiable)
+// 1. Shield Doodle (Reliable)
 const ShieldDoodle = ({ className = '' }: DoodleProps) => (
   <div className={`doodle-item ${className} pointer-events-auto select-none`}>
     <svg viewBox="0 0 160 100" className="w-full h-auto stroke-white/70 stroke-[1.2] fill-none hover:stroke-white transition-colors duration-300">
@@ -32,7 +32,7 @@ const ShieldDoodle = ({ className = '' }: DoodleProps) => (
   </div>
 );
 
-// 2. Anchor Doodle (Reliable / Confiable)
+// 2. Anchor Doodle (Reliable)
 const AnchorDoodle = ({ className = '' }: DoodleProps) => (
   <div className={`doodle-item ${className} pointer-events-auto select-none`}>
     <svg viewBox="0 0 160 100" className="w-full h-auto stroke-white/70 stroke-[1.2] fill-none hover:stroke-white transition-colors duration-300">
@@ -55,7 +55,7 @@ const AnchorDoodle = ({ className = '' }: DoodleProps) => (
   </div>
 );
 
-// 3. Rocket Doodle (Fast Learner / Aprendizaje Rápido)
+// 3. Rocket Doodle (Fast Learner)
 const RocketDoodle = ({ className = '' }: DoodleProps) => (
   <div className={`doodle-item ${className} pointer-events-auto select-none`}>
     <svg viewBox="0 0 160 100" className="w-full h-auto stroke-white/70 stroke-[1.2] fill-none hover:stroke-white transition-colors duration-300">
@@ -79,7 +79,7 @@ const RocketDoodle = ({ className = '' }: DoodleProps) => (
   </div>
 );
 
-// 4. Brain Doodle (Fast Learner / Aprendizaje Rápido)
+// 4. Brain Doodle (Fast Learner)
 const BrainDoodle = ({ className = '' }: DoodleProps) => (
   <div className={`doodle-item ${className} pointer-events-auto select-none`}>
     <svg viewBox="0 0 160 100" className="w-full h-auto stroke-white/70 stroke-[1.2] fill-none hover:stroke-white transition-colors duration-300">
@@ -105,7 +105,7 @@ const BrainDoodle = ({ className = '' }: DoodleProps) => (
   </div>
 );
 
-// 5. Zen Doodle (Calmado / Calm)
+// 5. Zen Doodle (Calm)
 const ZenDoodle = ({ className = '' }: DoodleProps) => (
   <div className={`doodle-item ${className} pointer-events-auto select-none`}>
     <svg viewBox="0 0 160 100" className="w-full h-auto stroke-white/70 stroke-[1.2] fill-none hover:stroke-white transition-colors duration-300">
@@ -118,7 +118,7 @@ const ZenDoodle = ({ className = '' }: DoodleProps) => (
   </div>
 );
 
-// 6. Cloud Doodle (Calmado / Calm)
+// 6. Cloud Doodle (Calm)
 const CloudDoodle = ({ className = '' }: DoodleProps) => (
   <div className={`doodle-item ${className} pointer-events-auto select-none`}>
     <svg viewBox="0 0 160 100" className="w-full h-auto stroke-white/70 stroke-[1.2] fill-none hover:stroke-white transition-colors duration-300">
@@ -134,7 +134,7 @@ const CloudDoodle = ({ className = '' }: DoodleProps) => (
   </div>
 );
 
-// 7. Smile Doodle (Gracioso / Funny)
+// 7. Smile Doodle (Funny)
 const SmileDoodle = ({ className = '' }: DoodleProps) => (
   <div className={`doodle-item ${className} pointer-events-auto select-none`}>
     <svg viewBox="0 0 160 100" className="w-full h-auto stroke-white/70 stroke-[1.2] fill-none hover:stroke-white transition-colors duration-300">

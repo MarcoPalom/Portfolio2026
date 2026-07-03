@@ -84,8 +84,8 @@ export default function EvaporatingPixels({ bgIndex }: EvaporatingPixelsProps) {
 
     let animationFrameId: number;
     const isMobile = window.innerWidth < 1024;
-    const GRID_SIZE = isMobile ? 20 : 12; // Larger blocks on mobile = fewer draw calls
-    const MAX_SPARKS = isMobile ? 30 : 200; // Cap sparks on mobile
+    const GRID_SIZE = isMobile ? 16 : 12; // 16px on mobile (much thinner and cleaner than 20px)
+    const MAX_SPARKS = isMobile ? 15 : 200; // Even fewer sparks on mobile for optimization and cleanliness
     let sparks: Spark[] = [];
     let frameCount = 0; // For frame skipping on mobile
 
@@ -199,72 +199,107 @@ export default function EvaporatingPixels({ bgIndex }: EvaporatingPixelsProps) {
       const hotStyle = `rgb(${Math.round(active.hot.r)}, ${Math.round(active.hot.g)}, ${Math.round(active.hot.b)})`;
 
       // ─── 3. DRAW CONTOUR PIXEL-ART OUTLINE ───
-      const center = isMobile ? w * 0.5 : w * 0.72;
+      const imgW = 537;
+      const imgH = 667;
+
+      // Calculate drawn image width and offset exactly matching ImageSequence object-contain behavior
+      const imageScale = Math.min(w / imgW, h / imgH);
+      const drawW = imgW * imageScale;
+      const drawX = w - drawW;
 
       // During flare up (avivar), the outline expands outwards by up to 30%
-      const baseScale = isMobile ? 1.7 : 0.95;
+      const baseScale = 0.95;
       const scale = baseScale * (1.0 + flareIntensityRef.current * 0.3);
+
+      const center = drawX + 0.72 * drawW;
 
       const topRowIndex = Math.floor(0.20 * rows);
 
-      // Slower, more stable time progression
-      const time = Date.now() * 0.0012;
+      // Slower, more stable time progression for gentle waves
+      const time = Date.now() * 0.0006;
 
       for (let gridY = topRowIndex; gridY < rows; gridY++) {
         const v = gridY / rows;
         const boundaryFraction = getLeftBoundaryFraction(v);
         if (boundaryFraction === -999) continue;
 
-        const xPosition = center - boundaryFraction * scale * w;
+        const xPosition = center - boundaryFraction * scale * drawW;
         const gridX = Math.floor(xPosition / GRID_SIZE);
 
-        // Add dynamic blocky flickering offset (flickering becomes more intense during flare up)
-        const flickerSpeed = 5.0 + flareIntensityRef.current * 8.0;
-        const flickerAmp = 1.1 + flareIntensityRef.current * 1.8;
-        const flicker = Math.floor(Math.sin(time * flickerSpeed + gridY * 0.85) * flickerAmp + (Math.random() - 0.5) * 0.65);
+        // Slow, smooth wave undulation along the contour (no high-frequency random noise)
+        const flickerSpeed = 2.0 + flareIntensityRef.current * 2.5;
+        const baseFlickerAmp = isMobile ? 0.7 : 1.4; // Thinner amplitude on mobile to avoid excessive sway
+        const flickerAmp = baseFlickerAmp + flareIntensityRef.current * 1.2;
+        const waveFrequency = isMobile ? 0.22 : 0.15; // Adjusted frequency for fewer mobile rows
+        const flicker = Math.floor(Math.sin(time * flickerSpeed + gridY * waveFrequency) * flickerAmp);
         const snappedGridX = gridX + flicker;
 
-        // Draw layered profile outline cells (4 pixel blocks wide)
-        ctx.fillStyle = borderStyle;
-        ctx.fillRect(snappedGridX * GRID_SIZE, gridY * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+        // Draw layered profile outline cells (Thinner 2-block wide layout on mobile, full 4-block on desktop)
+        if (isMobile) {
+          ctx.fillStyle = middleStyle;
+          ctx.fillRect(snappedGridX * GRID_SIZE, gridY * GRID_SIZE, GRID_SIZE, GRID_SIZE);
 
-        ctx.fillStyle = middleStyle;
-        ctx.fillRect((snappedGridX + 1) * GRID_SIZE, gridY * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+          ctx.fillStyle = hotStyle;
+          ctx.fillRect((snappedGridX + 1) * GRID_SIZE, gridY * GRID_SIZE, GRID_SIZE, GRID_SIZE);
 
-        ctx.fillStyle = coreStyle;
-        ctx.fillRect((snappedGridX + 2) * GRID_SIZE, gridY * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+          // Fill the entire right side of the head shape with solid theme color
+          ctx.fillStyle = borderStyle;
+          const fillX = (snappedGridX + 2) * GRID_SIZE;
+          ctx.fillRect(fillX, gridY * GRID_SIZE, Math.max(0, w - fillX), GRID_SIZE);
+        } else {
+          ctx.fillStyle = borderStyle;
+          ctx.fillRect(snappedGridX * GRID_SIZE, gridY * GRID_SIZE, GRID_SIZE, GRID_SIZE);
 
-        ctx.fillStyle = hotStyle;
-        ctx.fillRect((snappedGridX + 3) * GRID_SIZE, gridY * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+          ctx.fillStyle = middleStyle;
+          ctx.fillRect((snappedGridX + 1) * GRID_SIZE, gridY * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+
+          ctx.fillStyle = coreStyle;
+          ctx.fillRect((snappedGridX + 2) * GRID_SIZE, gridY * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+
+          ctx.fillStyle = hotStyle;
+          ctx.fillRect((snappedGridX + 3) * GRID_SIZE, gridY * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+
+          // Fill the entire right side of the head shape with solid theme color
+          ctx.fillStyle = borderStyle;
+          const fillX = (snappedGridX + 4) * GRID_SIZE;
+          ctx.fillRect(fillX, gridY * GRID_SIZE, Math.max(0, w - fillX), GRID_SIZE);
+        }
 
         // Draw top horizontal cap to wrap the top of the head
-        if (gridY >= topRowIndex && gridY < topRowIndex + 4) {
-          const capDepth = gridY - topRowIndex;
-          ctx.fillStyle =
-            capDepth === 0 ? borderStyle :
-              capDepth === 1 ? middleStyle :
-                capDepth === 2 ? coreStyle : hotStyle;
+        if (isMobile) {
+          if (gridY >= topRowIndex && gridY < topRowIndex + 2) {
+            ctx.fillStyle = gridY === topRowIndex ? middleStyle : hotStyle;
+            for (let dx = 2; dx < 6; dx++) {
+              ctx.fillRect((snappedGridX + dx) * GRID_SIZE, gridY * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+            }
+          }
+        } else {
+          if (gridY >= topRowIndex && gridY < topRowIndex + 4) {
+            const capDepth = gridY - topRowIndex;
+            ctx.fillStyle =
+              capDepth === 0 ? borderStyle :
+                capDepth === 1 ? middleStyle :
+                  capDepth === 2 ? coreStyle : hotStyle;
 
-          // Draw horizontal cells to the right to seal the head crown
-          for (let dx = 4; dx < 10; dx++) {
-            ctx.fillRect((snappedGridX + dx) * GRID_SIZE, gridY * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+            // Draw horizontal cells to the right to seal the head crown
+            for (let dx = 4; dx < 10; dx++) {
+              ctx.fillRect((snappedGridX + dx) * GRID_SIZE, gridY * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+            }
           }
         }
 
-        // Spawn pixel sparks breaking off to the left (wind/evaporation direction)
-        // Spawning rate and speed explode during flare up!
-        // On mobile: much lower spawn rate and capped count
-        const baseSpawnChance = isMobile ? 0.94 : 0.84;
-        const spawnChance = baseSpawnChance - flareIntensityRef.current * 0.35;
+        // Spawn pixel sparks breaking off to the left (calm drift)
+        const baseSpawnChance = isMobile ? 0.95 : 0.88;
+        const spawnChance = baseSpawnChance - flareIntensityRef.current * 0.25;
         if (Math.random() > spawnChance && sparks.length < MAX_SPARKS) {
-          const flareMult = 1.0 + flareIntensityRef.current * 2.0;
+          const flareMult = 1.0 + flareIntensityRef.current * 1.5;
           sparks.push({
             gridX: snappedGridX - 1,
             gridY: gridY,
             life: 1.0,
-            decay: (0.025 + Math.random() * 0.045) / (1.0 + flareIntensityRef.current * 0.6),
-            vx: (-0.4 - Math.random() * 1.2) * flareMult,
-            vy: (-0.3 - Math.random() * 0.7) * flareMult,
+            decay: (0.012 + Math.random() * 0.022) / (1.0 + flareIntensityRef.current * 0.6), // longer-lived particles
+            vx: (-0.15 - Math.random() * 0.35) * flareMult, // slower drift left
+            vy: (-0.05 - Math.random() * 0.12) * flareMult, // slower drift up
             colorType: Math.random() > 0.55 ? 'border' : 'middle',
           });
         }
@@ -276,8 +311,8 @@ export default function EvaporatingPixels({ bgIndex }: EvaporatingPixelsProps) {
         spark.gridY += spark.vy;
         spark.life -= spark.decay;
 
-        // Apply a little horizontal turbulence to floating sparks
-        spark.vx += (Math.random() - 0.5) * 0.15;
+        // Apply a gentle wave-like vertical and horizontal turbulence to floating sparks
+        spark.vx += Math.sin(time * 4.0 + spark.gridY * 0.12) * 0.01;
 
         if (spark.life <= 0 || spark.gridY < 0 || spark.gridX < 0 || spark.gridX >= cols) {
           return false;

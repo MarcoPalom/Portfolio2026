@@ -15,14 +15,14 @@ export const PortfolioTitle = forwardRef<HTMLDivElement>((_, ref) => {
           letterSpacing: '-0.04em'
         }}
       >
-        Portafolio 2026
+        Portfolio 2026
       </h1>
       <p className="text-sm sm:text-base lg:text-lg font-light text-white/30 uppercase tracking-widest mt-6 md:mt-8 font-sans product-subtitle-main flex items-center justify-center">
-        <span>Desliza para explorar</span>
+        <span>Scroll to explore</span>
         <span className="w-2.5 h-2.5 border border-white/35 inline-block mx-4" style={{ borderWidth: '1.5px' }} />
-        <span>Diseños</span>
+        <span>Designs</span>
         <span className="w-2.5 h-2.5 border border-white/35 inline-block mx-4" style={{ borderWidth: '1.5px' }} />
-        <span>Desarrollos</span>
+        <span>Developments</span>
       </p>
     </div>
   );

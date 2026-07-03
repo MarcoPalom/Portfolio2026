@@ -16,7 +16,7 @@ const frames = isMobile ? allFrames.filter((_, i) => i % 2 === 0) : allFrames;
 
 const productImages = [
   '/Screen1.webp',
-  '/Screen2.jpeg',
+  '/screen2.jpeg',
   '/Screen3.jpeg',
   '/Screen4.webp',
   '/Screen5.webp',

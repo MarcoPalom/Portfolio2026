@@ -23,7 +23,7 @@ export default function CookingSection({ scrollProgress }: CookingSectionProps) 
   }, [scrollProgress]);
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className="w-full h-full flex flex-col items-center justify-center text-center relative select-none pointer-events-auto"
     >
@@ -109,14 +109,14 @@ export default function CookingSection({ scrollProgress }: CookingSectionProps) 
       `}</style>
 
       {/* Background Heat Wave & Shifting Color Glow — HIDDEN on mobile */}
-      <div 
+      <div
         className="hidden md:block absolute w-[45%] h-[45%] rounded-full pointer-events-none z-0 mix-blend-screen animate-[flame-glow_5s_ease-in-out_infinite,glow-color-shift_12s_linear_infinite]"
         style={{ bottom: '15%' }}
       />
 
       <div ref={elementsRef} className="z-10 flex flex-col items-center justify-center max-w-xl px-4">
         {/* Title: WHAT'S COOKING? (Clean white text drop shadow) */}
-        <h2 
+        <h2
           className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-none uppercase tracking-tighter text-[#f5f5f7] drop-shadow-[0_0_15px_rgba(255,255,255,0.15)] mb-14"
           style={{ transform: 'scaleY(1.35)', transformOrigin: 'center center' }}
         >
@@ -125,19 +125,19 @@ export default function CookingSection({ scrollProgress }: CookingSectionProps) 
 
         {/* Floating names column positioned above the grill */}
         <div className="flex flex-col gap-5 items-center mb-6 z-20">
-          <div 
+          <div
             className="font-mono text-xs sm:text-sm md:text-base text-white/90 font-bold uppercase tracking-widest px-5 py-2.5 border border-white/20 rounded bg-black/60 backdrop-blur shadow-[0_0_15px_rgba(255,255,255,0.1)] animate-[floating-project-1_5s_ease-in-out_infinite]"
           >
             takara-hoby web
           </div>
-          
-          <div 
+
+          <div
             className="font-mono text-xs sm:text-sm md:text-base text-white/90 font-bold uppercase tracking-widest px-5 py-2.5 border border-white/20 rounded bg-black/60 backdrop-blur shadow-[0_0_15px_rgba(255,255,255,0.1)] animate-[floating-project-2_6s_ease-in-out_infinite]"
           >
             doty-app
           </div>
-          
-          <div 
+
+          <div
             className="font-mono text-xs sm:text-sm md:text-base text-white/90 font-bold uppercase tracking-widest px-5 py-2.5 border border-white/20 rounded bg-black/60 backdrop-blur shadow-[0_0_15px_rgba(255,255,255,0.1)] animate-[floating-project-3_4.5s_ease-in-out_infinite]"
           >
             FICSM 2026
@@ -146,7 +146,7 @@ export default function CookingSection({ scrollProgress }: CookingSectionProps) 
 
         {/* The Bonfire with Grill on Top (Minimal White Wireframe Aesthetic) */}
         <div className="relative w-85 h-64 flex items-center justify-center select-none z-10">
-          
+
           {/* SVG bonfire illustration */}
           <svg viewBox="0 0 200 200" className="w-full h-full">
             <defs>
@@ -178,36 +178,36 @@ export default function CookingSection({ scrollProgress }: CookingSectionProps) 
             {/* Layered Fire Flames rising from logs (Wireframe sways, no fill, shifting color outlines) */}
             <g fill="none" className="flames">
               {/* Outer Big Flame */}
-              <path 
-                d="M60,170 Q100,50 100,20 Q100,50 140,170" 
+              <path
+                d="M60,170 Q100,50 100,20 Q100,50 140,170"
                 strokeWidth="1.2"
                 className="animate-[animate-flame-1_3s_ease-in-out_infinite,color-outer-flame_12s_linear_infinite]"
                 style={{ transformOrigin: '100px 170px' }}
               />
               {/* Left licking flame */}
-              <path 
-                d="M65,170 Q75,100 90,60 Q85,100 95,170" 
+              <path
+                d="M65,170 Q75,100 90,60 Q85,100 95,170"
                 strokeWidth="1.4"
                 className="animate-[animate-flame-left_3.2s_ease-in-out_infinite,color-mid-flame_12s_linear_infinite]"
                 style={{ transformOrigin: '100px 170px', animationDelay: '0.2s' }}
               />
               {/* Middle Flame */}
-              <path 
-                d="M72,170 Q100,70 100,45 Q100,70 128,170" 
+              <path
+                d="M72,170 Q100,70 100,45 Q100,70 128,170"
                 strokeWidth="1.5"
                 className="animate-[animate-flame-2_2.4s_ease-in-out_infinite,color-mid-flame_12s_linear_infinite]"
                 style={{ transformOrigin: '100px 170px', animationDelay: '0.4s' }}
               />
               {/* Right licking flame */}
-              <path 
-                d="M105,170 Q115,100 110,60 Q125,100 135,170" 
+              <path
+                d="M105,170 Q115,100 110,60 Q125,100 135,170"
                 strokeWidth="1.4"
                 className="animate-[animate-flame-right_2.8s_ease-in-out_infinite,color-mid-flame_12s_linear_infinite]"
                 style={{ transformOrigin: '100px 170px', animationDelay: '0.1s' }}
               />
               {/* Inner Hot core */}
-              <path 
-                d="M84,170 Q100,100 100,75 Q100,100 116,170" 
+              <path
+                d="M84,170 Q100,100 100,75 Q100,100 116,170"
                 strokeWidth="1.8"
                 className="animate-[animate-flame-3_1.8s_ease-in-out_infinite,color-inner-flame_12s_linear_infinite]"
                 style={{ transformOrigin: '100px 170px', animationDelay: '0.6s' }}
@@ -228,16 +228,16 @@ export default function CookingSection({ scrollProgress }: CookingSectionProps) 
               <line x1="50" y1="120" x2="45" y2="175" stroke="rgba(255, 255, 255, 0.4)" strokeWidth="2.5" />
               <line x1="150" y1="120" x2="155" y2="175" stroke="rgba(255, 255, 255, 0.4)" strokeWidth="2.5" />
               <line x1="100" y1="122" x2="100" y2="183" stroke="rgba(255, 255, 255, 0.25)" strokeWidth="1.5" opacity="0.8" />
-              
+
               {/* Grill Platform Oval Rim */}
               <ellipse cx="100" cy="120" rx="55" ry="12" stroke="rgba(255, 255, 255, 0.65)" strokeWidth="3" />
-              
+
               {/* Grill Wire Mesh Lines */}
               <line x1="52" y1="120" x2="148" y2="120" stroke="rgba(255, 255, 255, 0.65)" strokeWidth="2" />
               <line x1="55" y1="117" x2="145" y2="117" stroke="rgba(255, 255, 255, 0.4)" strokeWidth="1.5" />
               <line x1="62" y1="114" x2="138" y2="114" stroke="rgba(255, 255, 255, 0.4)" strokeWidth="1.2" />
               <line x1="75" y1="111" x2="125" y2="111" stroke="rgba(255, 255, 255, 0.3)" strokeWidth="1" />
-              
+
               <line x1="55" y1="123" x2="145" y2="123" stroke="rgba(255, 255, 255, 0.4)" strokeWidth="1.5" />
               <line x1="62" y1="126" x2="138" y2="126" stroke="rgba(255, 255, 255, 0.4)" strokeWidth="1.2" />
               <line x1="75" y1="129" x2="125" y2="129" stroke="rgba(255, 255, 255, 0.3)" strokeWidth="1" />

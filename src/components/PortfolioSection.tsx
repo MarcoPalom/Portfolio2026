@@ -29,18 +29,17 @@ export default function PortfolioSection({ scrollProgress }: PortfolioSectionPro
     
     const isMobile = window.innerWidth < 768;
     const viewportHeight = window.innerHeight;
-
-    // Smoothly scroll the main list container vertically (120vh space multiplier)
     const spacingHeight = viewportHeight * 1.2;
 
+    // Smoothly scroll the main list container vertically (120% space multiplier)
     gsap.to(scrollContainer, {
-      y: -scrollProgress * spacingHeight,
+      y: `${-scrollProgress * 120}%`,
       duration: 0.8,
       ease: 'power2.out',
       overwrite: 'auto'
     });
 
-    // 2. Animate main "Portafolio 2026" header to stretch like a magazine cover in the background
+    // 2. Animate main "Portfolio 2026" header to stretch like a magazine cover in the background
     if (scrollProgress <= 1.0) {
       const p = scrollProgress; // 0 to 1
       gsap.to(titleEl, {
@@ -217,7 +216,7 @@ export default function PortfolioSection({ scrollProgress }: PortfolioSectionPro
         {/* Cooking Section (Bonfire slide at the end) */}
         <div 
           className="absolute left-0 w-full h-full flex items-center justify-center pointer-events-none"
-          style={{ top: `${(PRODUCTS.length + 1) * 120}vh` }}
+          style={{ top: `${(PRODUCTS.length + 1) * 120}%` }}
         >
           <CookingSection scrollProgress={scrollProgress} />
         </div>

@@ -229,7 +229,7 @@ export default function InterestsDoodles() {
 
       {/* ─── DESKTOP COLLAGE VIEW ─── */}
 
-      {/* ─── LEFT COLLAGE AREA (Música & Diseño) ─── */}
+      {/* ─── LEFT COLLAGE AREA (Music & Design) ─── */}
 
       {/* Row 1: Cassette Doodle & Music Icon */}
       <CassetteDoodle className="absolute left-[4vw] top-[64vh] w-[130px]" />

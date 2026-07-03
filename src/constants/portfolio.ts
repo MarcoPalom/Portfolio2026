@@ -25,7 +25,7 @@ export const PRODUCTS: Product[] = [
     title: 'FICSM 2024',
     subtitle: 'Interactive Film Festival Portal',
     description: 'Working as a solo developer, I adapted and modernized a deprecated template for the International Film Festival en la Costa del Seno Mexicano. Leveraging a native stack of WordPress, HTML5, CSS3, and JavaScript, I aligned the portal with the festival’s aesthetic expectations for the 2024 season.',
-    image: '/Screen2.jpeg',
+    image: '/screen2.jpeg',
     tags: ['WordPress', 'JavaScript', 'HTML5', 'CSS3'],
     color: 'purple',
     bigText: 'CINEMA'

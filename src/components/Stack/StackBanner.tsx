@@ -22,7 +22,7 @@ export default function StackBanner() {
 
       {/* Subtitle stacked as a small paragraph */}
       <p className="text-[10px] sm:text-xs font-mono text-white/40 uppercase tracking-widest max-w-[160px] leading-relaxed select-none z-10 self-end mb-2 mr-16">
-        Tecnologías, Librerías, Editores & Recursos Técnicos
+        Technologies, Libraries, Editors & Technical Resources
       </p>
       
       {/* Square '00' logo element in top right corner matching LOGO.png aesthetics */}

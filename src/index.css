@@ -27,10 +27,14 @@
     color-scheme: dark;
   }
 
-  /* Hide scrollbar for Chrome, Safari, Opera, Firefox, and Edge */
+  /* Hide scrollbar and prevent native document bounce/scrolling */
   html, body {
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE and Edge */
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    position: fixed;
   }
 
   html::-webkit-scrollbar,

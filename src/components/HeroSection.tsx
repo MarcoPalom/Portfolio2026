@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import ImageSequence from './ImageSequence';
 import EvaporatingPixels from './EvaporatingPixels';
+import ContactCard from './ContactCard';
 
 const IS_MOBILE = typeof window !== 'undefined' && window.innerWidth < 768;
 
@@ -27,6 +29,7 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({ bgIndex, setBgIndex, isHeroActive }: HeroSectionProps) {
+  const [isContactOpen, setIsContactOpen] = useState(false);
   const handleFrameTrigger = (frame: number) => {
     if (frame === 14 && isHeroActive) {
       // Loop the background colors only within the first 4 (0, 1, 2, 3) when at the Hero page
@@ -35,7 +38,7 @@ export default function HeroSection({ bgIndex, setBgIndex, isHeroActive }: HeroS
   };
 
   return (
-    <section className="relative min-h-screen w-full flex items-center overflow-hidden bg-transparent">
+    <section className="relative w-full h-full flex items-center overflow-hidden bg-transparent">
       {/* Background Cinematic Orbs — HIDDEN on mobile (blur is extremely expensive on mobile GPU) */}
       <div className="hidden lg:block absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-brand-700/20 rounded-full blur-[140px] pointer-events-none" />
       <div className="hidden lg:block absolute bottom-[-10%] right-[10%] w-[60%] h-[60%] bg-pink-700/10 rounded-full blur-[160px] pointer-events-none animate-pulse" style={{ animationDuration: '8s' }} />
@@ -62,17 +65,41 @@ export default function HeroSection({ bgIndex, setBgIndex, isHeroActive }: HeroS
           <span>Web Designer</span>
         </div>
 
+        {/* Contact CTA Button (pointer-events-auto to receive clicks) */}
+        <div className="mt-[5vh] lg:mt-[4.5vh] pointer-events-auto">
+          <button
+            onClick={() => setIsContactOpen(true)}
+            className="flex items-center justify-center px-6 h-9 rounded-full border border-white/10 bg-white/5 hover:bg-white/15 hover:border-white/35 hover:text-white text-white/80 font-mono text-[10px] uppercase tracking-[0.2em] transition-all duration-300 pointer-events-auto cursor-pointer"
+            style={{
+              boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+            }}
+          >
+            Contact
+          </button>
+        </div>
+
       </div>
 
-      <div className="absolute right-0 bottom-0 w-full lg:w-[48vw] h-[60vh] lg:h-full z-10 flex items-end overflow-hidden pointer-events-none">
-        {/* EvaporatingPixels disabled on mobile — canvas animation too heavy */}
-        {!IS_MOBILE && <EvaporatingPixels bgIndex={bgIndex} />}
+      {/* Image Sequence Container - shifted slightly below the screen on mobile to crop out straight t-shirt bottom edge */}
+      <div 
+        className="absolute right-0 w-full lg:w-[48vw] z-10 flex items-end overflow-hidden pointer-events-none"
+        style={{
+          bottom: typeof window !== 'undefined' && window.innerWidth < 1024 ? '-8vh' : '0',
+          height: typeof window !== 'undefined' && window.innerWidth < 1024 ? '68vh' : '100%',
+        }}
+      >
+        {/* EvaporatingPixels enabled on all devices (running in optimized low-draw state on mobile) */}
+        <EvaporatingPixels bgIndex={bgIndex} />
 
         {/* Reusable ImageSequence Component with custom styling, dynamic color mapping, and bottom fade-out mask */}
         <ImageSequence
           className="absolute inset-0 w-full h-full flex items-end justify-center lg:justify-end z-10 opacity-100"
           imgClassName="w-full h-full object-contain object-right-bottom"
           onTriggerFrame={handleFrameTrigger}
+          style={{
+            WebkitMaskImage: 'linear-gradient(to top, transparent, white 15%)',
+            maskImage: 'linear-gradient(to top, transparent, white 15%)',
+          }}
           imgStyle={{
             filter: holographicFilters[bgIndex],
             transition: 'filter 1.0s ease-in-out', // Smoothly transitions the face color to match the background
@@ -81,14 +108,24 @@ export default function HeroSection({ bgIndex, setBgIndex, isHeroActive }: HeroS
 
       </div>
 
-      {/* Logo in the bottom-left corner */}
-      <div className="absolute bottom-6 left-6 md:bottom-8 md:left-8 z-20">
+      {/* Logo in the bottom-left corner with mobile browser safety margins */}
+      <div 
+        className="absolute left-6 md:bottom-8 md:left-8 z-20"
+        style={{
+          bottom: typeof window !== 'undefined' && window.innerWidth < 768
+            ? 'calc(1.5rem + env(safe-area-inset-bottom))'
+            : undefined
+        }}
+      >
         <img
           src="/LOGO.png"
           alt="Logo"
           className="h-5 md:h-7 w-auto object-contain opacity-75 hover:opacity-100 transition-opacity duration-300 pointer-events-auto"
         />
       </div>
+
+      {/* Slide-up Contact Drawer overlay inside the Hero page bounds */}
+      <ContactCard isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
     </section>
   );
 }

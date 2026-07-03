@@ -162,7 +162,7 @@ export default function ImageSequence({ className, onTriggerFrame, style, imgSty
 
       // Map mobile frame index back to original 20-frame index for trigger callback
       const originalFrameIndex = isMobile ? next * 2 : next;
-      if (originalFrameIndex === 14 && onTriggerFrame) {
+      if (originalFrameIndex === 14 && directionRef.current === 1 && onTriggerFrame) {
         onTriggerFrame(14);
       }
     }, intervalMs);

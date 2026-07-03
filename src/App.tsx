@@ -23,6 +23,7 @@ function App() {
   const {
     activeSection,
     portfolioScroll,
+    stackScroll,
     aboutScroll,
     contactScroll,
     bgIndex,
@@ -60,7 +61,7 @@ function App() {
             )}
           </div>
 
-          {/* Section 2: Portafolio */}
+          {/* Section 2: Portfolio */}
           <div className="absolute left-[100%] top-[100%] w-full h-full">
             {Math.abs(activeSection - 1) <= 1 && (
               <PortfolioSection scrollProgress={portfolioScroll} />
@@ -70,7 +71,7 @@ function App() {
           {/* Section 3: Stack */}
           <div className="absolute left-0 top-[200%] w-full h-full">
             {Math.abs(activeSection - 2) <= 1 && (
-              <StackSection />
+              <StackSection scrollProgress={stackScroll} />
             )}
           </div>
 
@@ -81,7 +82,7 @@ function App() {
             )}
           </div>
 
-          {/* Section 5: Contacto */}
+          {/* Section 5: Contact */}
           <div className="absolute left-0 top-[400%] w-full h-full">
             {Math.abs(activeSection - 4) <= 1 && (
               <ContactSection scrollProgress={contactScroll} />

@@ -7,10 +7,26 @@ gsap.registerPlugin(Observer);
 
 const BOUNDARY_COOLDOWN = 250; // ms cooldown to trigger next section transition
 
+/** Dynamically compute how many scroll steps the stack section needs based on actual content height */
+function getStackMaxSteps(): number {
+  const container = document.getElementById('stack-section-container');
+  if (!container) return 0;
+  const grid = container.querySelector('.grid') as HTMLElement;
+  if (!grid) return 0;
+  const contentH = grid.scrollHeight;
+  // Use window.innerHeight for the real visible area (mobile browser chrome makes clientHeight unreliable)
+  const visibleH = window.innerHeight;
+  if (visibleH <= 0) return 0;
+  // Each step moves ~80% of viewport so the user sees overlap for context
+  const stepSize = visibleH * 0.8;
+  return Math.ceil((contentH - visibleH) / stepSize);
+}
+
 export function usePageScroll(loadingComplete: boolean) {
   const [bgIndex, setBgIndex] = useState(0);
   const [activeSection, setActiveSection] = useState(0);
   const [portfolioScroll, setPortfolioScroll] = useState(0); // float from 0.0 to products.length
+  const [stackScroll, setStackScroll] = useState(0); // float from 0.0 to 3.0 (4 mobile pages)
   const [aboutScroll, setAboutScroll] = useState(0); // float from 0.0 to 4.0 (4 background scenes)
   const [contactScroll, setContactScroll] = useState(0); // float from 0.0 to 1.0 (footer reveal)
 
@@ -46,16 +62,13 @@ export function usePageScroll(loadingComplete: boolean) {
 
     if (index === 2) {
       boundaryHitTimeRef.current = Date.now();
-      const stackContainer = document.getElementById('stack-section-container');
-      if (stackContainer) {
-        const maxScroll = stackContainer.scrollHeight - stackContainer.clientHeight;
-        if (activeSectionRef.current < 2) {
-          stackScrollRef.current = 0;
-          gsap.set(stackContainer, { scrollTop: 0 });
-        } else if (activeSectionRef.current > 2) {
-          stackScrollRef.current = maxScroll > 0 ? maxScroll : 0;
-          gsap.set(stackContainer, { scrollTop: stackScrollRef.current });
-        }
+      if (activeSectionRef.current < 2) {
+        stackScrollRef.current = 0.0;
+        setStackScroll(0.0);
+      } else if (activeSectionRef.current > 2) {
+        const maxSteps = getStackMaxSteps();
+        stackScrollRef.current = maxSteps;
+        setStackScroll(maxSteps);
       }
     }
 
@@ -65,8 +78,8 @@ export function usePageScroll(loadingComplete: boolean) {
         aboutScrollRef.current = 0.0;
         setAboutScroll(0.0);
       } else if (activeSectionRef.current > 3) {
-        aboutScrollRef.current = 4.0;
-        setAboutScroll(4.0);
+        aboutScrollRef.current = 5.0;
+        setAboutScroll(5.0);
       }
     }
 
@@ -118,10 +131,10 @@ export function usePageScroll(loadingComplete: boolean) {
     const wrapper = wrapperRef.current;
     if (!wrapper) return;
 
-    // Observer setup for wheel, touch swipes & pointer drag (with 20px tolerance to prevent accidental triggers)
+    // Observer setup for wheel & touch swipes (with 20px tolerance to prevent accidental triggers)
     const obs = Observer.create({
       target: window,
-      type: 'wheel,touch,pointer',
+      type: 'wheel,touch',
       wheelSpeed: -1.0,
       tolerance: 20,
       preventDefault: false,
@@ -158,25 +171,41 @@ export function usePageScroll(loadingComplete: boolean) {
             }
           }
           if (activeSectionRef.current === 2) {
-            const stackContainer = document.getElementById('stack-section-container');
-            if (stackContainer) {
-              const maxScroll = stackContainer.scrollHeight - stackContainer.clientHeight;
-              if (maxScroll > 10) {
-                if (stackContainer.scrollTop < maxScroll - 10) {
-                  // Permitir scroll nativo dentro del stack sin avanzar de sección
-                  return;
-                } else {
-                  if (Date.now() - boundaryHitTimeRef.current < BOUNDARY_COOLDOWN) {
-                    return;
+            const isMobileOrTablet = window.innerWidth < 1024;
+            const maxSteps = getStackMaxSteps();
+            if (isMobileOrTablet && maxSteps > 0 && stackScrollRef.current < maxSteps) {
+              isAnimatingRef.current = true;
+              const nextScroll = Math.min(maxSteps, Math.round(stackScrollRef.current) + 1.0);
+              const tempObj = { value: stackScrollRef.current };
+
+              gsap.to(tempObj, {
+                value: nextScroll,
+                duration: 0.8,
+                ease: 'power2.out',
+                onUpdate: () => {
+                  stackScrollRef.current = tempObj.value;
+                  setStackScroll(tempObj.value);
+                },
+                onComplete: () => {
+                  if (nextScroll >= maxSteps) {
+                    boundaryHitTimeRef.current = Date.now();
                   }
+                  setTimeout(() => {
+                    isAnimatingRef.current = false;
+                  }, 150);
                 }
+              });
+              return;
+            } else {
+              if (Date.now() - boundaryHitTimeRef.current < BOUNDARY_COOLDOWN) {
+                return;
               }
             }
           }
           if (activeSectionRef.current === 3) {
-            if (aboutScrollRef.current < 4.0) {
+            if (aboutScrollRef.current < 5.0) {
               isAnimatingRef.current = true;
-              const nextScroll = Math.min(4.0, Math.round(aboutScrollRef.current) + 1.0);
+              const nextScroll = Math.min(5.0, Math.round(aboutScrollRef.current) + 1.0);
               const tempObj = { value: aboutScrollRef.current };
 
               gsap.to(tempObj, {
@@ -188,7 +217,7 @@ export function usePageScroll(loadingComplete: boolean) {
                   setAboutScroll(tempObj.value);
                 },
                 onComplete: () => {
-                  if (nextScroll === 4.0) {
+                  if (nextScroll === 5.0) {
                     boundaryHitTimeRef.current = Date.now();
                   }
                   setTimeout(() => {
@@ -262,18 +291,33 @@ export function usePageScroll(loadingComplete: boolean) {
             }
           }
           if (activeSectionRef.current === 2) {
-            const stackContainer = document.getElementById('stack-section-container');
-            if (stackContainer) {
-              const maxScroll = stackContainer.scrollHeight - stackContainer.clientHeight;
-              if (maxScroll > 10) {
-                if (stackContainer.scrollTop > 10) {
-                  // Permitir scroll nativo dentro del stack sin retroceder de sección
-                  return;
-                } else {
-                  if (Date.now() - boundaryHitTimeRef.current < BOUNDARY_COOLDOWN) {
-                    return;
+            const isMobileOrTablet = window.innerWidth < 1024;
+            if (isMobileOrTablet && stackScrollRef.current > 0.0) {
+              isAnimatingRef.current = true;
+              const nextScroll = Math.max(0.0, Math.round(stackScrollRef.current) - 1.0);
+              const tempObj = { value: stackScrollRef.current };
+
+              gsap.to(tempObj, {
+                value: nextScroll,
+                duration: 0.8,
+                ease: 'power2.out',
+                onUpdate: () => {
+                  stackScrollRef.current = tempObj.value;
+                  setStackScroll(tempObj.value);
+                },
+                onComplete: () => {
+                  if (nextScroll === 0.0) {
+                    boundaryHitTimeRef.current = Date.now();
                   }
+                  setTimeout(() => {
+                    isAnimatingRef.current = false;
+                  }, 150);
                 }
+              });
+              return;
+            } else {
+              if (Date.now() - boundaryHitTimeRef.current < BOUNDARY_COOLDOWN) {
+                return;
               }
             }
           }
@@ -358,9 +402,9 @@ export function usePageScroll(loadingComplete: boolean) {
           }
         }
         if (activeSectionRef.current === 3) {
-          if (aboutScrollRef.current < 4.0) {
+          if (aboutScrollRef.current < 5.0) {
             isAnimatingRef.current = true;
-            const nextScroll = Math.min(4.0, Math.round(aboutScrollRef.current) + 1.0);
+            const nextScroll = Math.min(5.0, Math.round(aboutScrollRef.current) + 1.0);
             const tempObj = { value: aboutScrollRef.current };
 
             gsap.to(tempObj, {
@@ -372,7 +416,7 @@ export function usePageScroll(loadingComplete: boolean) {
                 setAboutScroll(tempObj.value);
               },
               onComplete: () => {
-                if (nextScroll === 4.0) {
+                if (nextScroll === 5.0) {
                   boundaryHitTimeRef.current = Date.now();
                 }
                 setTimeout(() => {
@@ -489,10 +533,6 @@ export function usePageScroll(loadingComplete: boolean) {
     window.addEventListener('keydown', handleKeyDown);
 
     const handlePreventDefault = (e: TouchEvent | WheelEvent) => {
-      const target = e.target as HTMLElement;
-      if (target && target.closest('#stack-section-container')) {
-        return;
-      }
       if (e.cancelable) {
         e.preventDefault();
       }
@@ -534,6 +574,7 @@ export function usePageScroll(loadingComplete: boolean) {
   return {
     activeSection,
     portfolioScroll,
+    stackScroll,
     aboutScroll,
     contactScroll,
     bgIndex,

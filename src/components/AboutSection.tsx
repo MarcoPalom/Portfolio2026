@@ -15,25 +15,25 @@ const PANELS = [
     subtitle: '',
   },
   {
-    // Panel 1 — MIS HOBBYS
+    // Panel 1 — MY HOBBIES
     bg: 'radial-gradient(ellipse at 50% 60%, #1a1a6e 0%, #0c0c3d 50%, #050518 100%)',
     accent: '#6366f1',
-    title: 'MIS HOBBYS',
-    subtitle: 'Lo que me apasiona fuera del código',
+    title: 'MY HOBBIES',
+    subtitle: 'What I\'m passionate about outside of coding',
   },
   {
-    // Panel 2 — MIS GUSTOS
+    // Panel 2 — MY INTERESTS
     bg: 'radial-gradient(ellipse at 50% 60%, #6b1d5e 0%, #2d0a27 50%, #120410 100%)',
     accent: '#ec4899',
-    title: 'MIS GUSTOS',
-    subtitle: 'Las cosas que definen mi estilo',
+    title: 'MY INTERESTS',
+    subtitle: 'The things that define my style',
   },
   {
-    // Panel 3 — YO
+    // Panel 3 — ME
     bg: 'radial-gradient(ellipse at 50% 60%, #7a3f14 0%, #241206 50%, #0e0804 100%)',
     accent: '#f59e0b',
-    title: 'YO',
-    subtitle: 'Quién soy más allá del trabajo',
+    title: 'ME',
+    subtitle: 'Who I am beyond work',
   },
 ];
 
@@ -41,7 +41,7 @@ const PANEL_COUNT = PANELS.length;
 
 const TITLES = [
   'ABOUT ME',
-  'MY HOBBYS',
+  'MY HOBBIES',
   'MY INTERESTS',
   'ME'
 ];
@@ -63,10 +63,14 @@ export default function AboutSection({ scrollProgress }: AboutSectionProps) {
     const track = panelTrackRef.current;
     if (!track) return;
 
-    const viewportHeight = window.innerHeight;
+    // Use the actual rendered height of the panel element for 100% precision
+    const firstPanel = track.firstElementChild as HTMLElement;
+    const viewportHeight = firstPanel ? firstPanel.clientHeight : window.innerHeight;
+
     // Keep background static at Panel 0 during title animation (0->1)
     // and translate by 100vh for each subsequent step (1->4)
-    const panelScroll = Math.min(PANELS.length - 1, Math.max(0, scrollProgress - 1));
+    // Capped at PANELS.length (4) to allow step 4 -> 5 to scroll the orange panel up out of view
+    const panelScroll = Math.min(PANELS.length, Math.max(0, scrollProgress - 1));
     const yTarget = -panelScroll * viewportHeight;
 
     gsap.to(track, {
@@ -114,7 +118,12 @@ export default function AboutSection({ scrollProgress }: AboutSectionProps) {
   // ── Scroll the titles to keep them fixed relative to viewport (reveal-clip effect) ──
   useEffect(() => {
     const titleEls = titleRefs.current;
-    const viewportHeight = window.innerHeight;
+    const track = panelTrackRef.current;
+    if (!track) return;
+
+    const firstPanel = track.firstElementChild as HTMLElement;
+    const viewportHeight = firstPanel ? firstPanel.clientHeight : window.innerHeight;
+
     const panelScroll = Math.min(PANELS.length - 1, Math.max(0, scrollProgress - 1));
     const introProgress = Math.min(scrollProgress, 1);
     const followOffset = (1 - introProgress) * 45;
@@ -183,14 +192,14 @@ export default function AboutSection({ scrollProgress }: AboutSectionProps) {
       <div
         ref={panelTrackRef}
         className="absolute inset-x-0 top-0 w-full pointer-events-none z-0"
-        style={{ height: `${PANEL_COUNT * 100}vh` }}
+        style={{ height: `${PANEL_COUNT * 100}dvh` }}
       >
         {PANELS.map((panel, i) => (
           <div
             key={i}
             className="relative w-full overflow-hidden"
             style={{
-              height: '100vh',
+              height: '100dvh',
               background: panel.bg,
             }}
           >
