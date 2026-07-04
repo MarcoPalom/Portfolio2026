@@ -58,17 +58,6 @@ export default function ImageSequence({ className, onTriggerFrame, style, imgSty
     const drawY = canvasH - drawH;
 
     ctx.drawImage(img, drawX, drawY, drawW, drawH);
-
-    // Apply linear gradient fade-out mask directly on the canvas to avoid iOS WebKit CSS mask-image bugs
-    ctx.save();
-    ctx.globalCompositeOperation = 'destination-in';
-    const gradient = ctx.createLinearGradient(0, 0, 0, canvasH);
-    gradient.addColorStop(0, 'white');
-    gradient.addColorStop(0.85, 'white');
-    gradient.addColorStop(1, 'transparent');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvasW, canvasH);
-    ctx.restore();
   }, []);
 
   // Preload images into JS Image objects (NOT in DOM)
