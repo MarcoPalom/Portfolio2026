@@ -76,16 +76,20 @@ export default function ImageSequence({ className, onTriggerFrame, style, imgSty
     let active = true;
     let loadedCount = 0;
     const images: HTMLImageElement[] = [];
+    let firstFrameDrawn = false;
 
     framePaths.forEach((src, idx) => {
       const img = new Image();
       img.onload = () => {
         if (!active) return;
         loadedCount++;
+        // Draw frame 0 as soon as it's ready (don't wait for all frames)
+        if (idx === 0 && !firstFrameDrawn) {
+          firstFrameDrawn = true;
+          drawFrame(0);
+        }
         if (loadedCount === framePaths.length) {
           loadedRef.current = true;
-          // Draw first frame once all loaded
-          drawFrame(0);
         }
       };
       img.onerror = () => {
@@ -93,7 +97,6 @@ export default function ImageSequence({ className, onTriggerFrame, style, imgSty
         loadedCount++;
         if (loadedCount === framePaths.length) {
           loadedRef.current = true;
-          drawFrame(0);
         }
       };
       img.src = src;
@@ -122,14 +125,10 @@ export default function ImageSequence({ className, onTriggerFrame, style, imgSty
       canvas.style.width = `${rect.width}px`;
       canvas.style.height = `${rect.height}px`;
 
-      const ctx = canvas.getContext('2d');
-      if (ctx) ctx.scale(dpr, dpr);
-
-      // Redraw current frame after resize
-      if (loadedRef.current) {
-        // Reset scale before redraw
-        canvas.width = rect.width * dpr;
-        canvas.height = rect.height * dpr;
+      // Redraw current frame after resize (canvas.width assignment already cleared the context)
+      // Check if at least the first image is loaded to draw something
+      const currentImg = imagesRef.current[currentFrameRef.current];
+      if (currentImg && currentImg.complete && currentImg.naturalWidth > 0) {
         drawFrame(currentFrameRef.current);
       }
     };
