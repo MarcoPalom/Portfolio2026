@@ -39,12 +39,6 @@ export default function HeroSection({ bgIndex, setBgIndex, isHeroActive }: HeroS
 
   return (
     <section className="relative w-full h-full flex items-center overflow-hidden bg-transparent">
-      {/* Background Cinematic Orbs — HIDDEN on mobile (blur is extremely expensive on mobile GPU) */}
-      <div className="hidden lg:block absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-brand-700/20 rounded-full blur-[140px] pointer-events-none" />
-      <div className="hidden lg:block absolute bottom-[-10%] right-[10%] w-[60%] h-[60%] bg-pink-700/10 rounded-full blur-[160px] pointer-events-none animate-pulse" style={{ animationDuration: '8s' }} />
-
-
-
       {/* Title & Subtitle: Layered behind the image sequence (z-5) */}
       <div className="absolute left-[6vw] lg:left-[8vw] top-[14vh] lg:top-[25vh] z-5 flex flex-col pointer-events-none select-none">
 

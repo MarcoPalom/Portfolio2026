@@ -18,9 +18,6 @@ export default function PortfolioSection({ scrollProgress }: PortfolioSectionPro
   const productRefs = useRef<(HTMLDivElement | null)[]>([]);
   const bigTextRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  // Active project calculation based on scroll progress
-  const activeIdx = scrollProgress > 0.5 ? Math.floor((scrollProgress - 0.5)) : 0;
-
   useEffect(() => {
     const productsEl = productRefs.current;
     const scrollContainer = scrollContainerRef.current;
@@ -145,8 +142,10 @@ export default function PortfolioSection({ scrollProgress }: PortfolioSectionPro
 
       if (bigTextsEl[idx]) {
         const bigTextYOffset = localScroll * 120;
+        // Only the word of the project on screen shows; the others fade out instead of stacking
+        const bigTextOpacity = scrollProgress === 0 ? 0 : 0.04 * Math.max(0, 1 - absScroll);
         gsap.to(bigTextsEl[idx], { 
-          opacity: scrollProgress === 0 ? 0 : 0.04, 
+          opacity: bigTextOpacity, 
           y: bigTextYOffset, 
           scaleY: 1.0 + stretchAmount * 0.5,
           duration: 0.6, 
@@ -160,24 +159,8 @@ export default function PortfolioSection({ scrollProgress }: PortfolioSectionPro
   return (
     <div 
       ref={containerRef}
-      className="w-full h-full min-h-screen flex flex-col items-center justify-center relative select-none bg-transparent overflow-hidden"
+      className="w-full h-full flex flex-col items-center justify-center relative select-none bg-transparent overflow-hidden"
     >
-      {/* Background Glowing Orbs — HIDDEN on mobile (blur is extremely expensive) */}
-      <div className="hidden lg:block absolute top-[20%] left-[20%] w-[50%] h-[50%] bg-purple-700/10 rounded-full blur-[140px] pointer-events-none" />
-      <div className="hidden lg:block absolute bottom-[20%] right-[20%] w-[45%] h-[45%] bg-brand-700/10 rounded-full blur-[140px] pointer-events-none" />
-      
-      {/* Glowing highlight orb — HIDDEN on mobile */}
-      <div 
-        className={`hidden lg:block absolute w-[40%] h-[40%] rounded-full blur-[150px] pointer-events-none transition-all duration-1000 ease-in-out ${
-          activeIdx === 0 ? 'top-[20%] left-[20%] bg-purple-500/10' :
-          activeIdx === 1 ? 'top-[20%] right-[20%] bg-purple-500/10' :
-          activeIdx === 2 ? 'bottom-[20%] left-[20%] bg-emerald-500/10' :
-          activeIdx === 3 ? 'bottom-[20%] right-[20%] bg-purple-500/10' :
-          activeIdx === 4 ? 'top-[20%] left-[20%] bg-orange-500/10' :
-          'top-[20%] left-[20%] bg-transparent'
-        }`} 
-      />
-
       {/* Giant Cyberpunk Background Typography — HIDDEN on mobile to save paint cost */}
       {typeof window !== 'undefined' && window.innerWidth >= 768 && PRODUCTS.map((product, idx) => (
         <div
@@ -213,12 +196,12 @@ export default function PortfolioSection({ scrollProgress }: PortfolioSectionPro
           />
         ))}
 
-        {/* Cooking Section (Bonfire slide at the end) */}
+        {/* Open to Work slide (bonfire at the end) */}
         <div 
           className="absolute left-0 w-full h-full flex items-center justify-center pointer-events-none"
           style={{ top: `${(PRODUCTS.length + 1) * 120}%` }}
         >
-          <CookingSection scrollProgress={scrollProgress} />
+          <CookingSection scrollProgress={scrollProgress} restingStep={PRODUCTS.length + 1} />
         </div>
       </div>
 

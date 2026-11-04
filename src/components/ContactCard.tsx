@@ -218,7 +218,7 @@ export default function ContactCard({ yPercent, isOpen, onClose }: ContactCardPr
         </div>
 
         {/* Bottom accent line */}
-        <div className="mt-4 h-px bg-gradient-to-r from-transparent via-blue-400/20 to-transparent" />
+        <div className="mt-4 h-px bg-white/10" />
       </div>
     </div>
   );

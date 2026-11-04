@@ -39,21 +39,16 @@ export default function IfYouEvenCareButton({ scrollProgress }: IfYouEvenCareBut
 
   // State to handle smooth fade-out and fade-in when changing panel config text
   const [displayConfig, setDisplayConfig] = useState(config);
-  const [textOpacity, setTextOpacity] = useState(1);
+
+  // While the panel text is changing, fade out, then swap the text in after 250ms
+  const isSwapping = config?.text !== displayConfig?.text;
+  const textOpacity = isSwapping ? 0 : 1;
 
   useEffect(() => {
-    if (config?.text !== displayConfig?.text) {
-      // Transition fade out
-      setTextOpacity(0);
-      const timer = setTimeout(() => {
-        setDisplayConfig(config);
-        setTextOpacity(1);
-      }, 250);
-      return () => clearTimeout(timer);
-    } else if (config?.color !== displayConfig?.color) {
-      setDisplayConfig(config);
-    }
-  }, [config, displayConfig]);
+    if (!isSwapping) return;
+    const timer = setTimeout(() => setDisplayConfig(config), 250);
+    return () => clearTimeout(timer);
+  }, [config, isSwapping]);
 
   const isVisible = config !== null;
   const activeConfig = displayConfig || config;

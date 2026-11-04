@@ -124,7 +124,7 @@ export default function Loader({ onComplete }: LoaderProps) {
             <img 
               src="/LOGO.png" 
               alt="Logo" 
-              className="w-[240px] h-[120px] object-contain filter drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+              className="w-[240px] h-[120px] object-contain"
             />
           </div>
 

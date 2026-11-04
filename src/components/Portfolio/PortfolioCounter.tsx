@@ -55,7 +55,7 @@ export default function PortfolioCounter({ scrollProgress, productsLength }: Por
     const logsGroup = el.querySelector('.logs-group');
     const flames = el.querySelectorAll('.log-flame');
 
-    const tl = gsap.timeline({ overwrite: 'auto' });
+    const tl = gsap.timeline();
 
     if (isCooking) {
       // Phase 1: Collapse the numbers into the center (0.4s)
@@ -146,6 +146,9 @@ export default function PortfolioCounter({ scrollProgress, productsLength }: Por
         ease: 'back.out(1.4)'
       }, 0.45);
     }
+
+    // Kill this morph when the step changes so fast back-and-forth scrolling can't leave mixed states
+    return () => { tl.kill(); };
   }, [displayStep, productsLength]);
 
   return (

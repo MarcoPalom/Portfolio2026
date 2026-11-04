@@ -131,6 +131,29 @@ export function usePageScroll(loadingComplete: boolean) {
     const wrapper = wrapperRef.current;
     if (!wrapper) return;
 
+    /**
+     * Moves the portfolio exactly one project in `dir` (+1 / -1) and locks input while
+     * PortfolioSection tweens to it, so a project never rests halfway between two slots.
+     * Returns false when already at the edge, letting the caller change section.
+     */
+    const stepPortfolio = (dir: 1 | -1): boolean => {
+      const limit = PRODUCTS.length + 1;
+      const current = Math.round(portfolioScrollRef.current);
+      const next = Math.max(0, Math.min(limit, current + dir));
+      if (next === current) return false;
+
+      isAnimatingRef.current = true;
+      portfolioScrollRef.current = next;
+      setPortfolioScroll(next);
+      setTimeout(() => {
+        if (next === 0 || next === limit) {
+          boundaryHitTimeRef.current = Date.now();
+        }
+        isAnimatingRef.current = false;
+      }, 850);
+      return true;
+    };
+
     // Observer setup for wheel & touch swipes (with 20px tolerance to prevent accidental triggers)
     const obs = Observer.create({
       target: window,
@@ -141,34 +164,8 @@ export function usePageScroll(loadingComplete: boolean) {
       onUp: () => {
         if (!isAnimatingRef.current) {
           if (activeSectionRef.current === 1) {
-            const limit = PRODUCTS.length + 1;
-            if (portfolioScrollRef.current < limit) {
-              const isMobile = window.innerWidth < 768;
-              if (isMobile) {
-                isAnimatingRef.current = true;
-                const nextScroll = Math.min(limit, Math.round(portfolioScrollRef.current) + 1.0);
-                portfolioScrollRef.current = nextScroll;
-                setPortfolioScroll(nextScroll);
-                setTimeout(() => {
-                  if (nextScroll === limit) {
-                    boundaryHitTimeRef.current = Date.now();
-                  }
-                  isAnimatingRef.current = false;
-                }, 800);
-              } else {
-                const nextScroll = Math.min(limit, portfolioScrollRef.current + 0.15);
-                portfolioScrollRef.current = nextScroll;
-                setPortfolioScroll(nextScroll);
-                if (nextScroll === limit) {
-                  boundaryHitTimeRef.current = Date.now();
-                }
-              }
-              return;
-            } else {
-              if (Date.now() - boundaryHitTimeRef.current < BOUNDARY_COOLDOWN) {
-                return;
-              }
-            }
+            if (stepPortfolio(1)) return;
+            if (Date.now() - boundaryHitTimeRef.current < BOUNDARY_COOLDOWN) return;
           }
           if (activeSectionRef.current === 2) {
             const isMobileOrTablet = window.innerWidth < 1024;
@@ -262,33 +259,8 @@ export function usePageScroll(loadingComplete: boolean) {
       onDown: () => {
         if (!isAnimatingRef.current) {
           if (activeSectionRef.current === 1) {
-            const isMobile = window.innerWidth < 768;
-            if (portfolioScrollRef.current > 0.0) {
-              if (isMobile) {
-                isAnimatingRef.current = true;
-                const nextScroll = Math.max(0.0, Math.round(portfolioScrollRef.current) - 1.0);
-                portfolioScrollRef.current = nextScroll;
-                setPortfolioScroll(nextScroll);
-                setTimeout(() => {
-                  if (nextScroll === 0.0) {
-                    boundaryHitTimeRef.current = Date.now();
-                  }
-                  isAnimatingRef.current = false;
-                }, 800);
-              } else {
-                const nextScroll = Math.max(0.0, portfolioScrollRef.current - 0.15);
-                portfolioScrollRef.current = nextScroll;
-                setPortfolioScroll(nextScroll);
-                if (nextScroll === 0.0) {
-                  boundaryHitTimeRef.current = Date.now();
-                }
-              }
-              return;
-            } else {
-              if (Date.now() - boundaryHitTimeRef.current < BOUNDARY_COOLDOWN) {
-                return;
-              }
-            }
+            if (stepPortfolio(-1)) return;
+            if (Date.now() - boundaryHitTimeRef.current < BOUNDARY_COOLDOWN) return;
           }
           if (activeSectionRef.current === 2) {
             const isMobileOrTablet = window.innerWidth < 1024;
@@ -384,22 +356,10 @@ export function usePageScroll(loadingComplete: boolean) {
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (isAnimatingRef.current) return;
-      const limit = PRODUCTS.length + 1;
       if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
         if (activeSectionRef.current === 1) {
-          if (portfolioScrollRef.current < limit) {
-            const nextScroll = Math.min(limit, portfolioScrollRef.current + 0.5);
-            portfolioScrollRef.current = nextScroll;
-            setPortfolioScroll(nextScroll);
-            if (nextScroll === limit) {
-              boundaryHitTimeRef.current = Date.now();
-            }
-            return;
-          } else {
-            if (Date.now() - boundaryHitTimeRef.current < BOUNDARY_COOLDOWN) {
-              return;
-            }
-          }
+          if (stepPortfolio(1)) return;
+          if (Date.now() - boundaryHitTimeRef.current < BOUNDARY_COOLDOWN) return;
         }
         if (activeSectionRef.current === 3) {
           if (aboutScrollRef.current < 5.0) {
@@ -457,19 +417,8 @@ export function usePageScroll(loadingComplete: boolean) {
         gotoSection(activeSectionRef.current + 1);
       } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
         if (activeSectionRef.current === 1) {
-          if (portfolioScrollRef.current > 0.0) {
-            const nextScroll = Math.max(0.0, portfolioScrollRef.current - 0.5);
-            portfolioScrollRef.current = nextScroll;
-            setPortfolioScroll(nextScroll);
-            if (nextScroll === 0.0) {
-              boundaryHitTimeRef.current = Date.now();
-            }
-            return;
-          } else {
-            if (Date.now() - boundaryHitTimeRef.current < BOUNDARY_COOLDOWN) {
-              return;
-            }
-          }
+          if (stepPortfolio(-1)) return;
+          if (Date.now() - boundaryHitTimeRef.current < BOUNDARY_COOLDOWN) return;
         }
         if (activeSectionRef.current === 3) {
           if (aboutScrollRef.current > 0.0) {

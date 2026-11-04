@@ -1,11 +1,12 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type CSSProperties } from 'react';
 import gsap from 'gsap';
 
 interface CookingSectionProps {
   scrollProgress: number;
+  restingStep: number; // scroll step at which this slide sits centered
 }
 
-export default function CookingSection({ scrollProgress }: CookingSectionProps) {
+export default function CookingSection({ scrollProgress, restingStep }: CookingSectionProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const elementsRef = useRef<HTMLDivElement>(null);
 
@@ -15,12 +16,12 @@ export default function CookingSection({ scrollProgress }: CookingSectionProps) 
 
     // Subtle parallax shift based on general scroll progress
     gsap.to(el, {
-      y: (scrollProgress - 6.0) * 80,
+      y: (scrollProgress - restingStep) * 80,
       duration: 0.6,
       ease: 'power1.out',
       overwrite: 'auto'
     });
-  }, [scrollProgress]);
+  }, [scrollProgress, restingStep]);
 
   return (
     <div
@@ -89,18 +90,6 @@ export default function CookingSection({ scrollProgress }: CookingSectionProps) 
           50% { fill: rgb(34, 211, 238); }
           75% { fill: rgb(244, 114, 182); }
         }
-        @keyframes floating-project-1 {
-          0%, 100% { transform: translateY(0) rotate(0.5deg); }
-          50% { transform: translateY(-10px) rotate(-1deg); }
-        }
-        @keyframes floating-project-2 {
-          0%, 100% { transform: translateY(0) rotate(-0.5deg); }
-          50% { transform: translateY(-14px) rotate(1deg); }
-        }
-        @keyframes floating-project-3 {
-          0%, 100% { transform: translateY(0) rotate(1deg); }
-          50% { transform: translateY(-8px) rotate(-0.5deg); }
-        }
         @keyframes spark-rise {
           0% { transform: translateY(180px) translateX(0) scale(1); opacity: 0; }
           20% { opacity: 0.9; }
@@ -115,37 +104,37 @@ export default function CookingSection({ scrollProgress }: CookingSectionProps) 
       />
 
       <div ref={elementsRef} className="z-10 flex flex-col items-center justify-center max-w-xl px-4">
-        {/* Title: WHAT'S COOKING? (Clean white text drop shadow) */}
+        {/* Title: OPEN TO WORK — the bonfire stays lit while I'm available */}
         <h2
-          className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-none uppercase tracking-tighter text-[#f5f5f7] drop-shadow-[0_0_15px_rgba(255,255,255,0.15)] mb-14"
-          style={{ transform: 'scaleY(1.35)', transformOrigin: 'center center' }}
+          className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-none uppercase text-[#f5f5f7] mb-[0.35em]"
+          style={{ transform: 'scaleY(1.35)', transformOrigin: 'center top' }}
         >
-          What's Cooking?
+          Open to Work
         </h2>
 
-        {/* Floating names column positioned above the grill */}
-        <div className="flex flex-col gap-5 items-center mb-6 z-20">
-          <div
-            className="font-mono text-xs sm:text-sm md:text-base text-white/90 font-bold uppercase tracking-widest px-5 py-2.5 border border-white/20 rounded bg-black/60 backdrop-blur shadow-[0_0_15px_rgba(255,255,255,0.1)] animate-[floating-project-1_5s_ease-in-out_infinite]"
-          >
-            takara-hoby web
-          </div>
+        <p className="font-sans text-sm md:text-base text-white/60 mb-5 text-balance">
+          Frontend developer &amp; web designer, available for new roles and projects.
+        </p>
 
-          <div
-            className="font-mono text-xs sm:text-sm md:text-base text-white/90 font-bold uppercase tracking-widest px-5 py-2.5 border border-white/20 rounded bg-black/60 backdrop-blur shadow-[0_0_15px_rgba(255,255,255,0.1)] animate-[floating-project-2_6s_ease-in-out_infinite]"
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-4 z-20">
+          <a
+            href="mailto:marco.palomo.dev@gmail.com?subject=Let's%20work%20together"
+            className="font-sans text-xs md:text-sm font-medium uppercase tracking-[0.15em] text-[#0a0b0e] bg-[#f5f5f7] hover:bg-white px-5 py-2.5 rounded-sm transition-colors duration-200"
           >
-            doty-app
-          </div>
-
-          <div
-            className="font-mono text-xs sm:text-sm md:text-base text-white/90 font-bold uppercase tracking-widest px-5 py-2.5 border border-white/20 rounded bg-black/60 backdrop-blur shadow-[0_0_15px_rgba(255,255,255,0.1)] animate-[floating-project-3_4.5s_ease-in-out_infinite]"
+            Hire me
+          </a>
+          <a
+            href="https://www.linkedin.com/in/marco-palomo-975a9928a"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-sans text-xs md:text-sm font-medium uppercase tracking-[0.15em] text-white/80 hover:text-white border border-white/25 hover:border-white/60 px-5 py-2.5 rounded-sm transition-colors duration-200"
           >
-            FICSM 2026
-          </div>
+            LinkedIn
+          </a>
         </div>
 
         {/* The Bonfire with Grill on Top (Minimal White Wireframe Aesthetic) */}
-        <div className="relative w-85 h-64 flex items-center justify-center select-none z-10">
+        <div className="relative w-[min(21rem,80vw)] h-[min(16rem,34dvh)] flex items-center justify-center select-none z-10">
 
           {/* SVG bonfire illustration */}
           <svg viewBox="0 0 200 200" className="w-full h-full">
@@ -216,10 +205,10 @@ export default function CookingSection({ scrollProgress }: CookingSectionProps) 
 
             {/* Rising spark particles (Shifting color dots) */}
             <g className="animate-[sparks-color-shift_12s_linear_infinite]">
-              <circle cx="80" cy="180" r="1.5" className="animate-[spark-rise_3.5s_linear_infinite]" style={{ '--drift-x': '40px' } as any} />
-              <circle cx="120" cy="180" r="1.2" className="animate-[spark-rise_4.5s_linear_infinite]" style={{ '--drift-x': '-35px', animationDelay: '1.2s' } as any} />
-              <circle cx="95" cy="180" r="1.5" className="animate-[spark-rise_2.8s_linear_infinite]" style={{ '--drift-x': '20px', animationDelay: '0.7s' } as any} />
-              <circle cx="110" cy="180" r="1.0" className="animate-[spark-rise_5.2s_linear_infinite]" style={{ '--drift-x': '-15px', animationDelay: '2.1s' } as any} />
+              <circle cx="80" cy="180" r="1.5" className="animate-[spark-rise_3.5s_linear_infinite]" style={{ '--drift-x': '40px' } as CSSProperties} />
+              <circle cx="120" cy="180" r="1.2" className="animate-[spark-rise_4.5s_linear_infinite]" style={{ '--drift-x': '-35px', animationDelay: '1.2s' } as CSSProperties} />
+              <circle cx="95" cy="180" r="1.5" className="animate-[spark-rise_2.8s_linear_infinite]" style={{ '--drift-x': '20px', animationDelay: '0.7s' } as CSSProperties} />
+              <circle cx="110" cy="180" r="1.0" className="animate-[spark-rise_5.2s_linear_infinite]" style={{ '--drift-x': '-15px', animationDelay: '2.1s' } as CSSProperties} />
             </g>
 
             {/* The Cooking Grill (Parrilla) sitting on top of the stones/fire */}

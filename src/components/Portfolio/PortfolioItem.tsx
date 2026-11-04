@@ -18,22 +18,18 @@ export const PortfolioItem = forwardRef<HTMLDivElement, PortfolioItemProps>(({ p
     >
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-12 lg:gap-16 items-center w-full max-w-6xl mx-auto px-6 pointer-events-auto">
         
-        {/* Staggered Image column with rounded glass frame */}
+        {/* Staggered image column */}
         <div 
           className={`md:col-span-7 ${idx % 2 === 1 ? 'md:order-2' : ''} w-full flex justify-center product-img`} 
           style={{ transformOrigin: 'center center' }}
         >
-          <div 
-            className={`p-2 md:p-3 bg-white/5 lg:backdrop-blur-md border border-white/10 rounded-[1.5rem] md:rounded-[2rem] ${theme.glowShadow} w-full h-[170px] sm:h-[240px] md:h-[350px] lg:h-[380px] overflow-hidden group hover:border-white/20 transition-all duration-500 ease-out`}
-          >
-            <div className="w-full h-full overflow-hidden rounded-[1rem] md:rounded-[1.5rem]">
-              <img 
-                src={product.image} 
-                alt={product.title} 
-                loading="lazy"
-                className="w-full h-full object-cover object-center group-hover:scale-[1.03] transition-transform duration-700 ease-out pointer-events-none" 
-              />
-            </div>
+          <div className="w-full h-[170px] sm:h-[240px] md:h-[350px] lg:h-[380px] max-h-[42dvh] md:max-h-[60dvh] overflow-hidden rounded-md border border-white/10">
+            <img 
+              src={product.image} 
+              alt={product.title} 
+              loading="lazy"
+              className="w-full h-full object-cover object-center pointer-events-none" 
+            />
           </div>
         </div>
 
@@ -46,22 +42,22 @@ export const PortfolioItem = forwardRef<HTMLDivElement, PortfolioItemProps>(({ p
             className={`w-2.5 h-2.5 md:w-3.5 md:h-3.5 border border-current block mb-0.5 opacity-85 ${theme.accentText}`} 
             style={{ borderWidth: '1.5px' }} 
           />
-          <span className={`text-[10px] md:text-xs font-sans font-bold tracking-widest uppercase ${theme.accentText}`}>
-            {product.subtitle}
-          </span>
-          
           <h3 
-            className="text-2xl sm:text-4xl lg:text-5xl font-display uppercase tracking-tight text-white leading-[0.9] mt-0.5"
+            className="text-2xl sm:text-4xl lg:text-5xl font-display uppercase text-white leading-[0.9] mt-0.5 mb-[0.2em]"
             style={{ 
-              transformOrigin: 'left center',
+              // scaleY grows the glyphs downward only; mb-[0.2em] reserves that space
+              transformOrigin: 'left top',
               letterSpacing: '-0.02em',
               transform: 'scaleY(1.2)'
             }}
           >
             {product.title}
           </h3>
+          <span className={`text-xs md:text-sm font-sans font-medium mt-1 ${theme.accentText}`}>
+            {product.subtitle}
+          </span>
           
-          <p className="text-[11px] sm:text-sm text-white/80 font-mono tracking-wide mt-1.5 md:mt-3 leading-relaxed">
+          <p className="text-xs sm:text-sm text-white/75 font-sans max-w-[60ch] mt-1 md:mt-2 leading-relaxed">
             {product.description}
           </p>
           
@@ -75,6 +71,17 @@ export const PortfolioItem = forwardRef<HTMLDivElement, PortfolioItemProps>(({ p
               </span>
             ))}
           </div>
+
+          {product.url && (
+            <a
+              href={product.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`self-start mt-2 md:mt-3 text-xs md:text-sm font-sans font-medium underline underline-offset-4 decoration-1 hover:decoration-2 ${theme.accentText}`}
+            >
+              Visit site ↗
+            </a>
+          )}
         </div>
 
       </div>

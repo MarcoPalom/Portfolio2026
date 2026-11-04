@@ -39,7 +39,7 @@ export default function StackSection({ scrollProgress }: StackSectionProps) {
     <div
       ref={containerRef}
       id="stack-section-container"
-      className="w-full h-full min-h-screen relative px-4 md:px-8 py-4 select-none bg-transparent text-white overflow-hidden"
+      className="w-full h-full relative px-4 md:px-8 py-4 select-none bg-transparent text-white overflow-hidden"
     >
       {/* On desktop: fits in one grid. On mobile: tall column paged by scrollProgress. Adding padding bottom on mobile. */}
       <div
@@ -49,7 +49,7 @@ export default function StackSection({ scrollProgress }: StackSectionProps) {
         {/* Banner Block (Spans 2 columns on desktop) */}
         <StackBanner />
 
-        {/* Dynamic blueprints grid blocks with brand-specific glows */}
+        {/* Dynamic blueprints grid blocks */}
         {ECOSYSTEM_STACK.map((item) => (
           <StackCard key={item.id} item={item} />
         ))}

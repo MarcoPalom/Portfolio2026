@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type CSSProperties } from 'react';
 import gsap from 'gsap';
 import HobbiesDoodles from './HobbiesDoodles';
 import InterestsDoodles from './InterestsDoodles';
@@ -203,19 +203,6 @@ export default function AboutSection({ scrollProgress }: AboutSectionProps) {
               background: panel.bg,
             }}
           >
-            {/* Atmospheric glow blob — HIDDEN on mobile (blur extremely expensive) */}
-            <div
-              className="hidden md:block absolute left-1/2 -translate-x-1/2 rounded-full blur-[140px] md:blur-[200px] pointer-events-none"
-              style={{
-                bottom: '25vh',
-                width: '60vw',
-                height: '60vw',
-                maxWidth: '850px',
-                maxHeight: '850px',
-                backgroundColor: panel.accent,
-                opacity: 0.25,
-              }}
-            />
 
             {/* Panel separator line */}
             {i > 0 && (
@@ -232,13 +219,13 @@ export default function AboutSection({ scrollProgress }: AboutSectionProps) {
               ref={(el) => {
                 titleRefs.current[i] = el;
                 if (i === 0) {
-                  (titleRef as any).current = el;
+                  titleRef.current = el;
                 }
               }}
               className="about-bg-title font-display font-black uppercase select-none leading-none z-0 pointer-events-none whitespace-nowrap fill-up-text"
               style={{
                 '--fill-percent': i === 0 ? undefined : '100%',
-              } as any}
+              } as CSSProperties}
             >
               {TITLES[i]}
             </h1>

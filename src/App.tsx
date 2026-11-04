@@ -34,7 +34,6 @@ function App() {
 
   return (
     <div className="min-h-screen relative bg-[#0a0b0e] text-white overflow-hidden select-none">
-      {/* Custom Cursor */}
       <CustomCursor />
 
       {/* Loading Screen Overlay */}
